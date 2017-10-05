@@ -1,0 +1,59 @@
+apply plugin: 'java'
+// For buildscript -> repositories -> maven
+apply plugin: 'maven'
+apply plugin: 'application'
+apply plugin: "org.sonarqube"
+// Add automated release process
+apply plugin: 'net.researchgate.release'
+
+// Configure the maven repository deployment
+install {
+    repositories.mavenInstaller {
+        // Set the version
+        pom.version = version
+        // Set the group/namespace for the maven repository deployment.
+        pom.groupId = 'jsr223'
+    }
+}
+
+defaultTasks 'jar'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url "http://repository.activeeon.com/content/groups/proactive/"
+        }
+    }
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:1.2"
+        classpath 'net.researchgate:gradle-release:2.2.1'
+        // Code Formatting dependencies
+        classpath "com.diffplug.gradle.spotless:spotless:2.4.0"
+        classpath "org.ow2.proactive:coding-rules:1.0.0"
+        delete "gradle/ext"
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("coding-rules") }, dest: 'gradle/ext'
+        // END code formatting dependencies
+    }
+}
+
+apply from: "$rootDir/gradle/ext/coding-format.gradle"
+
+dependencies {
+    compile group: 'net.sf.py4j', name: 'py4j', version: '0.10.6'
+    compile 'org.projectlombok:lombok:1.16.6'
+    compile 'log4j:log4j:1.2.17'
+    compile 'com.google.guava:guava:19.0'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.1'
+    testCompile('junit:junit:4.12') {
+        exclude module: 'hamcrest'
+        exclude module: 'hamcrest-core'
+    }
+    testCompile 'org.mockito:mockito-all:1.10.19'
+}
