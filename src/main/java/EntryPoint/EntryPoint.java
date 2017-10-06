@@ -54,7 +54,7 @@ public class EntryPoint {
 
     private Map<String, Serializable> variabels = new HashMap<>();
 
-    private Bindings bindings = new SimpleBindings();
+    public Bindings bindings = new SimpleBindings();
 
     //Add the objects to the gateway server
     //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
@@ -68,14 +68,14 @@ public class EntryPoint {
 
     //Start gateway server
     public void gateWayServerStart(){
-        GatewayServer gatewayServer = new GatewayServer(this.getInstance());
+        GatewayServer gatewayServer = new GatewayServer(this.getInstance(), 25335);
         gatewayServer.start();
         System.out.println("GateWay Server Started");
     }
 
     //Stop gateway server
     public void gateWayServerStop(){
-        GatewayServer gatewayServer = new GatewayServer(this.getInstance());
+        GatewayServer gatewayServer = new GatewayServer(this.getInstance(), 25335);
         gatewayServer.shutdown();
         System.out.println("GateWay Server Stopped");
     }
