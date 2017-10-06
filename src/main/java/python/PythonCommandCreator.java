@@ -26,6 +26,8 @@
 package python;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ActiveEon Team
@@ -43,22 +45,20 @@ public class PythonCommandCreator {
      * @param pythonVersion the version of Python (either 2 or 3)
      * @return A String which contains the command
      */
-    public String createPythonExecutionCommand(File pythonFile, String pythonVersion) {
-        StringBuffer sb = new StringBuffer();
+    public String[] createPythonExecutionCommand(File pythonFile, String pythonVersion) {
+        List<String> command = new ArrayList<>();
 
         //Add Python Command
         if(pythonVersion.equals("python3".toLowerCase())) {
-            sb.append(PYTHON3_COMMAND);
-            sb.append(" ");
+            command.add(PYTHON3_COMMAND);
         }else{
-            sb.append(PYTHON2_COMMAND);
-            sb.append(" ");
+            command.add(PYTHON2_COMMAND);
         }
 
         //Add the file path
-        sb.append(pythonFile.getPath());
+        command.add(pythonFile.getPath());
 
-        return sb.toString();
+        return command.toArray(new String[command.size()]);
     }
 
 }
