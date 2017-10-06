@@ -50,8 +50,9 @@ public class PythonScriptWriter {
         Writer pythonScriptFileWriter = new FileWriter(pythonTempFile);
         pythonScriptFileWriter.write("from py4j.java_gateway import JavaGateway"+"\n");
         pythonScriptFileWriter.write("gateway = JavaGateway()"+"\n");
-        //TODO change here to add bindings ot local()
-        pythonScriptFileWriter.write("variables = gateway.entry_point.getVariables()"+"\n");
+        //Add the bindings ot locals() variable in Python
+        pythonScriptFileWriter.write("bindings = gateway.entry_point.getBindings()"+"\n");
+        pythonScriptFileWriter.write("bindings = locals().update(bindings)");
         pythonScriptFileWriter.write(fileContent);
         pythonScriptFileWriter.close();
 
