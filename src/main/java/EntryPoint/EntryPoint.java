@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import javax.script.Bindings;
+import javax.script.SimpleBindings;
 
 import py4j.GatewayServer;
 
@@ -53,67 +54,7 @@ public class EntryPoint {
 
     private Map<String, Serializable> variabels = new HashMap<>();
 
-    private Bindings bindings = new Bindings() {
-        @Override
-        public Object put(String name, Object value) {
-            return null;
-        }
-
-        @Override
-        public void putAll(Map<? extends String, ?> toMerge) {
-
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return false;
-        }
-
-        @Override
-        public Object get(Object key) {
-            return null;
-        }
-
-        @Override
-        public Object remove(Object key) {
-            return null;
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public Set<String> keySet() {
-            return null;
-        }
-
-        @Override
-        public Collection<Object> values() {
-            return null;
-        }
-
-        @Override
-        public Set<Entry<String, Object>> entrySet() {
-            return null;
-        }
-    };
+    private Bindings bindings = new SimpleBindings();
 
     //Add the objects to the gateway server
     //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
