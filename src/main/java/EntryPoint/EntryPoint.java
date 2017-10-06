@@ -65,19 +65,4 @@ public class EntryPoint {
     public Bindings getBindings() {
         return bindings;
     }
-
-    //Start gateway server
-    public void gateWayServerStart(){
-        GatewayServer gatewayServer = new GatewayServer(this.getInstance(), 25335);
-        gatewayServer.start();
-        System.out.println("GateWay Server Started");
-    }
-
-    //Stop gateway server
-    public void gateWayServerStop(){
-        GatewayServer gatewayServer = new GatewayServer(this.getInstance(), 25335);
-        gatewayServer.shutdown();
-        System.out.println("GateWay Server Stopped");
-    }
-
 }
