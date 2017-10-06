@@ -29,7 +29,7 @@ package ProcessBuilder;
  * @author ActiveEon Team
  * @since 05/10/2017
  */
-public class SingletonPythonProcessBuilderFactory implements PythonProcessBuilderFactory{
+public class SingletonPythonProcessBuilderFactory implements PythonProcessBuilderFactory {
     private static SingletonPythonProcessBuilderFactory ourInstance = new SingletonPythonProcessBuilderFactory();
 
     public static SingletonPythonProcessBuilderFactory getInstance() {

@@ -2,8 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="jsr223-cpython_main" target="1.8" />
-      <module name="jsr223-cpython_test" target="1.8" />
+      <module name="jsr223-_main" target="1.7" />
+      <module name="jsr223-_test" target="1.7" />
+      <module name="jsr223-cpython_main" target="1.7" />
+      <module name="jsr223-cpython_test" target="1.7" />
+      <module name="jsr223-p_main" target="1.7" />
+      <module name="jsr223-p_test" target="1.7" />
+      <module name="jsr223-perl_main" target="1.7" />
+      <module name="jsr223-perl_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * @author ActiveEon Team
  * @since 05/10/2017
@@ -49,9 +50,9 @@ public class PythonCommandCreator {
         List<String> command = new ArrayList<>();
 
         //Add Python Command
-        if(pythonVersion.equals("python3".toLowerCase())) {
+        if (pythonVersion.equals("python3".toLowerCase())) {
             command.add(PYTHON3_COMMAND);
-        }else{
+        } else {
             command.add(PYTHON2_COMMAND);
         }
 

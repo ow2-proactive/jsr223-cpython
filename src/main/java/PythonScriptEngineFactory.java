@@ -1,3 +1,4 @@
+
 /*
  * ProActive Parallel Suite(TM):
  * The Open Source library for parallel and distributed
@@ -24,16 +25,17 @@
  * or a different license than the AGPL.
  */
 
-import java.util.Map;
-import java.util.List;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import utils.PythonVersionGetter;
+
 
 /**
  * @author ActiveEon Team
@@ -42,7 +44,7 @@ import utils.PythonVersionGetter;
 public class PythonScriptEngineFactory implements ScriptEngineFactory {
     private static final Map<String, String> PARAMETERS = new HashMap<>();
 
-    static{
+    static {
         //TODO re-write the version
         String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python3");
         PARAMETERS.put(ScriptEngine.NAME, "python");

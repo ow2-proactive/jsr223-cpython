@@ -25,16 +25,17 @@
  */
 package EntryPoint;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
 
 import py4j.GatewayServer;
+
 
 /**
  * @author ActiveEon Team
@@ -46,7 +47,8 @@ public class EntryPoint {
      */
     private static EntryPoint ourInstance = new EntryPoint();
 
-    private EntryPoint() {}
+    private EntryPoint() {
+    }
 
     public static EntryPoint getInstance() {
         return ourInstance;
@@ -58,7 +60,7 @@ public class EntryPoint {
 
     //Add the objects to the gateway server
     //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
-    public Map getVariables(){
+    public Map getVariables() {
         return variabels;
     }
 

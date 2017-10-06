@@ -1,3 +1,4 @@
+
 /*
  * ProActive Parallel Suite(TM):
  * The Open Source library for parallel and distributed
@@ -26,27 +27,27 @@
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
-import javax.script.SimpleBindings;
-import javax.script.ScriptException;
 import javax.script.ScriptEngineFactory;
-import javax.script.AbstractScriptEngine;
-
-import EntryPoint.EntryPoint;
-import py4j.GatewayServer;
-import python.PythonScriptWriter;
-import python.PythonCommandCreator;
-import ProcessBuilder.Utils.PythonProcessBuilderUtilities;
-import ProcessBuilder.SingletonPythonProcessBuilderFactory;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
+
+import EntryPoint.EntryPoint;
+import ProcessBuilder.SingletonPythonProcessBuilderFactory;
+import ProcessBuilder.Utils.PythonProcessBuilderUtilities;
+import py4j.GatewayServer;
+import python.PythonCommandCreator;
+import python.PythonScriptWriter;
 
 
 /**
@@ -91,7 +92,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         bindings.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
 
         //Create a process builder
-        ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance().getProcessBuilder(pythonCommand);
+        ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance()
+                                                                            .getProcessBuilder(pythonCommand);
 
         Process process = null;
 
@@ -100,14 +102,14 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             //Start process
             process = processBuilder.start();
 
-//            //To show the result for testing
-//            InputStream fis = process.getInputStream();
-//            InputStreamReader isr = new InputStreamReader(fis);
-//            BufferedReader br = new BufferedReader(isr);
-//            String line = null;
-//            while ((line = br.readLine()) != null) {
-//                System.out.println(line);
-//            }
+            //            //To show the result for testing
+            //            InputStream fis = process.getInputStream();
+            //            InputStreamReader isr = new InputStreamReader(fis);
+            //            BufferedReader br = new BufferedReader(isr);
+            //            String line = null;
+            //            while ((line = br.readLine()) != null) {
+            //                System.out.println(line);
+            //            }
 
             //Wait for the process to exit
             int exitValue = process.waitFor();
@@ -118,7 +120,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             return exitValue;
 
         } catch (IOException e) {
-            throw new ScriptException("Check if Python is installed properly. Failed to execute Python with exception: " + e);
+            throw new ScriptException("Check if Python is installed properly. Failed to execute Python with exception: " +
+                                      e);
         } catch (InterruptedException e1) {
             log.info("Python script execution interrupted. " + e1.getMessage());
             if (process != null) {

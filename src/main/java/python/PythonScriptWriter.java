@@ -26,9 +26,10 @@
 package python;
 
 import java.io.File;
-import java.io.Writer;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+
 
 /**
  * @author ActiveEon Team
@@ -48,11 +49,11 @@ public class PythonScriptWriter {
 
         // Write python script file to disk
         Writer pythonScriptFileWriter = new FileWriter(pythonTempFile);
-        pythonScriptFileWriter.write("from py4j.java_gateway import JavaGateway, GatewayParameters"+"\n");
-        pythonScriptFileWriter.write("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))"+"\n");
+        pythonScriptFileWriter.write("from py4j.java_gateway import JavaGateway, GatewayParameters" + "\n");
+        pythonScriptFileWriter.write("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))" + "\n");
         //Add the bindings ot locals() variable in Python
-        pythonScriptFileWriter.write("bindings = gateway.entry_point.getBindings()"+"\n");
-        pythonScriptFileWriter.write("bindings = locals().update(bindings)"+"\n");
+        pythonScriptFileWriter.write("bindings = gateway.entry_point.getBindings()" + "\n");
+        pythonScriptFileWriter.write("bindings = locals().update(bindings)" + "\n");
         pythonScriptFileWriter.write(fileContent);
         pythonScriptFileWriter.close();
 

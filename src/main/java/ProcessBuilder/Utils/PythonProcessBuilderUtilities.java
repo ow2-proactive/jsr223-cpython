@@ -31,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+
 /**
  * @author ActiveEon Team
  * @since 05/10/2017
@@ -84,7 +85,7 @@ public class PythonProcessBuilderUtilities {
      * @param processInput  A data source to be streamed to the process. If null nothing will be attached.
      */
     public void attachStreamsToProcess(Process process, Writer processOutput, Writer processError,
-                                       Reader processInput) {
+            Reader processInput) {
         if (processOutput != null) {
             // Attach to std output
             attachToInputStream(new InputStreamReader(process.getInputStream()), processOutput);

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/jsr223-cpython.iml" filepath="$PROJECT_DIR$/jsr223-cpython.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jsr223-cpython.iml" filepath="$PROJECT_DIR$/.idea/modules/jsr223-cpython.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jsr223-cpython_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jsr223-cpython_main.iml" group="jsr223-cpython" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jsr223-cpython_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jsr223-cpython_test.iml" group="jsr223-cpython" />
     </modules>
