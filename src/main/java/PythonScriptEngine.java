@@ -42,15 +42,16 @@ import python.PythonCommandCreator;
 import ProcessBuilder.Utils.PythonProcessBuilderUtilities;
 import ProcessBuilder.SingletonPythonProcessBuilderFactory;
 
-import lombok.extern.log4j.Log4j;
+import org.apache.log4j.Logger;
 
 
 /**
  * @author ActiveEon Team
  * @since 04/10/2017
  */
-@Log4j
 public class PythonScriptEngine extends AbstractScriptEngine {
+
+    private static final Logger log = Logger.getLogger(PythonScriptEngine.class);
 
     private PythonProcessBuilderUtilities processBuilderUtilities = new PythonProcessBuilderUtilities();
 
@@ -69,8 +70,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         try {
             pythonFile = pythonScriptWriter.writeFileToDisk(script);
         } catch (IOException e) {
-            //TODO add logs
-            //log.warn("Failed to write content to python file: ", e);
+            log.warn("Failed to write content to python file: ", e);
         }
 
         //Create Python Command
@@ -108,8 +108,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         } catch (IOException e) {
             throw new ScriptException("Check if Python is installed properly. Failed to execute Python with exception: " + e);
         } catch (InterruptedException e1) {
-            //TODO add logs
-            //log.info("Python script execution interrupted. ", e1.getMessage());
+            log.info("Python script execution interrupted. " + e1.getMessage());
             if (process != null) {
                 process.destroy();
             }
@@ -118,7 +117,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                 try {
                     process.waitFor();
                 } catch (InterruptedException e) {
-                    //TODO add logs "Python execution was not finished correctly after the interruption. " + e.getMessage();
+                    log.info("Python execution was not finished correctly after the interruption. " + e.getMessage());
                 }
             }
 
@@ -126,7 +125,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             if (pythonFile != null) {
                 boolean deleted = pythonFile.delete();
                 if (!deleted) {
-                    //TODO add logs "File: " + pythonFile.getAbsolutePath() + " was not deleted."
+                    log.warn("File: " + pythonFile.getAbsolutePath() + " was not deleted.");
                 }
             }
             //Stop the gateway server
@@ -143,9 +142,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         try {
             PythonProcessBuilderUtilities.pipe(reader, stringWriter);
         } catch (IOException e) {
-            //TODO add logs
-            //log.warn("Filed to convert Reader into StringWriter. Not possible to execute Python script.");
-            //log.debug("Filed to convert Reader into StringWriter. Not possible to execute Python script.", e);
+            log.warn("Filed to convert Reader into StringWriter. Not possible to execute Python script.");
+            log.debug("Filed to convert Reader into StringWriter. Not possible to execute Python script.", e);
         }
 
         return eval(stringWriter.toString(), context);
