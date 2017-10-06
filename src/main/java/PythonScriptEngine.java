@@ -24,7 +24,10 @@
  * or a different license than the AGPL.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -37,6 +40,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.AbstractScriptEngine;
 
 import EntryPoint.EntryPoint;
+import py4j.GatewayServer;
 import python.PythonScriptWriter;
 import python.PythonCommandCreator;
 import ProcessBuilder.Utils.PythonProcessBuilderUtilities;
@@ -75,11 +79,12 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
         //Create Python Command
         //TODO change here to automatically choose python version
-        String pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, "python3");
+        String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, "python3");
 
         //Create the EntryPoint and start the gateway server
         EntryPoint entryPoint = EntryPoint.getInstance();
-        entryPoint.gateWayServerStart();
+        GatewayServer gatewayServer = new GatewayServer(entryPoint, 25335);
+        gatewayServer.start();
 
         //Populate the bindings in the gateway server
         Bindings bindings = entryPoint.getBindings();
@@ -91,11 +96,18 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         Process process = null;
 
         try {
+
             //Start process
             process = processBuilder.start();
 
-            //Attach streams
-            processBuilderUtilities.attachStreamsToProcess(process, context.getWriter(), context.getErrorWriter(), context.getReader());
+            //To show the result
+            InputStream fis = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
 
             //Wait for the process to exit
             int exitValue = process.waitFor();
@@ -129,7 +141,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                 }
             }
             //Stop the gateway server
-            entryPoint.gateWayServerStop();
+            gatewayServer.shutdown();
         }
         return null;
     }
