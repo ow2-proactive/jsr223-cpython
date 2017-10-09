@@ -1,7 +1,6 @@
 apply plugin: 'java'
 // For buildscript -> repositories -> maven
 apply plugin: 'maven'
-apply plugin: 'application'
 apply plugin: "org.sonarqube"
 // Add automated release process
 apply plugin: 'net.researchgate.release'
@@ -18,8 +17,6 @@ install {
         pom.groupId = 'jsr223'
     }
 }
-
-defaultTasks 'jar'
 
 repositories {
     mavenCentral()
@@ -70,12 +67,7 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
-jar {
-    manifest {
-        attributes(
-                "Class-Path": "../../") // ProActive root directory (script-engine sits in dist/lib)
-    }
-}
+
 
 // Configure sonarqube plugin.
 // Username and password need to be added through the command line. Add username with
@@ -94,7 +86,7 @@ jar {
 // files modified in the current pull request.
 sonarqube {
     properties {
-        property "sonar.projectName", "jsr223-perl"
+        property "sonar.projectName", "jsr223-cpython"
         property "sonar.host.url", "http://master.ci.activeeon.com:9000"
         property "sonar.jdbc.url", "jdbc:postgresql://master.ci.activeeon.com:5432/sonar"
         property "sonar.projectVersion", version
@@ -122,5 +114,3 @@ uploadArchives {
         }
     }
 }
-
-mainClassName = ' '
