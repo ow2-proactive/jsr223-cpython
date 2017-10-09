@@ -100,15 +100,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             //Start process
             process = processBuilder.start();
 
-            //To show the result for testing
-            InputStream fis = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-
             //Wait for the process to exit
             int exitValue = process.waitFor();
 
