@@ -30,7 +30,7 @@ package jsr223.cpython.processbuilder;
  * @since 05/10/2017
  */
 public class SingletonPythonProcessBuilderFactory implements PythonProcessBuilderFactory {
-    private static SingletonPythonProcessBuilderFactory ourInstance = new SingletonPythonProcessBuilderFactory();
+    private static final SingletonPythonProcessBuilderFactory ourInstance = new SingletonPythonProcessBuilderFactory();
 
     public static SingletonPythonProcessBuilderFactory getInstance() {
         return ourInstance;
