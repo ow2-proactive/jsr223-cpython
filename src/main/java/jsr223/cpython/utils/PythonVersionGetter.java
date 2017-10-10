@@ -23,7 +23,7 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package utils;
+package jsr223.cpython.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class PythonVersionGetter {
         if (python2or3.toLowerCase().equals("python3")) {
             PYTHON_VERSION_COMMAND = "python3" + PYTHON_VERSION_COMMAND;
         } else {
-            PYTHON_VERSION_COMMAND = "python2" + PYTHON_VERSION_COMMAND;
+            PYTHON_VERSION_COMMAND = "jsr223/cpython/python" + PYTHON_VERSION_COMMAND;
         }
 
         try {

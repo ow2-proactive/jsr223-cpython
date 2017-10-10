@@ -23,48 +23,12 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package EntryPoint;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.script.Bindings;
-import javax.script.SimpleBindings;
-
-import py4j.GatewayServer;
-
+package jsr223.cpython.processbuilder;
 
 /**
  * @author ActiveEon Team
  * @since 05/10/2017
  */
-public class EntryPoint {
-    /**
-     * Singleton
-     */
-    private static EntryPoint ourInstance = new EntryPoint();
-
-    private EntryPoint() {
-    }
-
-    public static EntryPoint getInstance() {
-        return ourInstance;
-    }
-
-    private Map<String, Serializable> variabels = new HashMap<>();
-
-    public Bindings bindings = new SimpleBindings();
-
-    //Add the objects to the gateway server
-    //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
-    public Map getVariables() {
-        return variabels;
-    }
-
-    public Bindings getBindings() {
-        return bindings;
-    }
+public interface PythonProcessBuilderFactory {
+    ProcessBuilder getProcessBuilder(String... command);
 }

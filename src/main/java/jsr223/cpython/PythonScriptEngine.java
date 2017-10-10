@@ -1,4 +1,4 @@
-
+package jsr223.cpython;
 /*
  * ProActive Parallel Suite(TM):
  * The Open Source library for parallel and distributed
@@ -25,11 +25,8 @@
  * or a different license than the AGPL.
  */
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 
@@ -42,12 +39,12 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 
-import EntryPoint.EntryPoint;
-import ProcessBuilder.SingletonPythonProcessBuilderFactory;
-import ProcessBuilder.Utils.PythonProcessBuilderUtilities;
+import jsr223.cpython.entrypoint.EntryPoint;
+import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
+import jsr223.cpython.processbuilder.Utils.PythonProcessBuilderUtilities;
 import py4j.GatewayServer;
-import python.PythonCommandCreator;
-import python.PythonScriptWriter;
+import jsr223.cpython.python.PythonCommandCreator;
+import jsr223.cpython.python.PythonScriptWriter;
 
 
 /**

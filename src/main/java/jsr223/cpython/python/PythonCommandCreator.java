@@ -23,12 +23,43 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package ProcessBuilder;
+package jsr223.cpython.python;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author ActiveEon Team
  * @since 05/10/2017
  */
-public interface PythonProcessBuilderFactory {
-    ProcessBuilder getProcessBuilder(String... command);
+public class PythonCommandCreator {
+
+    private static final String PYTHON2_COMMAND = "jsr223/cpython/python";
+
+    private static final String PYTHON3_COMMAND = "python3";
+
+    /**
+     * This method is used to create a bash command which executes a python script with a given python file
+     * @param pythonFile
+     * @param pythonVersion the version of Python (either 2 or 3)
+     * @return A String which contains the command
+     */
+    public String[] createPythonExecutionCommand(File pythonFile, String pythonVersion) {
+        List<String> command = new ArrayList<>();
+
+        //Add Python Command
+        if (pythonVersion.equals("python3".toLowerCase())) {
+            command.add(PYTHON3_COMMAND);
+        } else {
+            command.add(PYTHON2_COMMAND);
+        }
+
+        //Add the file path
+        command.add(pythonFile.getPath());
+
+        return command.toArray(new String[command.size()]);
+    }
+
 }

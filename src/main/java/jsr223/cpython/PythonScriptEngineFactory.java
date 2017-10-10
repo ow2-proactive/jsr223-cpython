@@ -1,4 +1,4 @@
-
+package jsr223.cpython;
 /*
  * ProActive Parallel Suite(TM):
  * The Open Source library for parallel and distributed
@@ -34,7 +34,7 @@ import java.util.Map;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
-import utils.PythonVersionGetter;
+import jsr223.cpython.utils.PythonVersionGetter;
 
 
 /**
@@ -47,10 +47,10 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
     static {
         //TODO re-write the version
         String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python3");
-        PARAMETERS.put(ScriptEngine.NAME, "python");
-        PARAMETERS.put(ScriptEngine.ENGINE, "python");
+        PARAMETERS.put(ScriptEngine.NAME, "jsr223/cpython/python");
+        PARAMETERS.put(ScriptEngine.ENGINE, "jsr223/cpython/python");
         PARAMETERS.put(ScriptEngine.ENGINE_VERSION, pythonEngineVersion);
-        PARAMETERS.put(ScriptEngine.LANGUAGE, "python");
+        PARAMETERS.put(ScriptEngine.LANGUAGE, "jsr223/cpython/python");
         PARAMETERS.put(ScriptEngine.LANGUAGE_VERSION, pythonEngineVersion);
     }
 
@@ -76,7 +76,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getNames() {
-        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "python", "Python");
+        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "jsr223/cpython/python", "Python");
     }
 
     @Override

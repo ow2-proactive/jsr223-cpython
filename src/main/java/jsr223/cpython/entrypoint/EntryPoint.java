@@ -23,43 +23,44 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package python;
+package jsr223.cpython.entrypoint;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.script.Bindings;
+import javax.script.SimpleBindings;
 
 
 /**
  * @author ActiveEon Team
  * @since 05/10/2017
  */
-public class PythonCommandCreator {
-
-    private static final String PYTHON2_COMMAND = "python";
-
-    private static final String PYTHON3_COMMAND = "python3";
-
+public class EntryPoint {
     /**
-     * This method is used to create a bash command which executes a python script with a given python file
-     * @param pythonFile
-     * @param pythonVersion the version of Python (either 2 or 3)
-     * @return A String which contains the command
+     * Singleton
      */
-    public String[] createPythonExecutionCommand(File pythonFile, String pythonVersion) {
-        List<String> command = new ArrayList<>();
+    private static EntryPoint ourInstance = new EntryPoint();
 
-        //Add Python Command
-        if (pythonVersion.equals("python3".toLowerCase())) {
-            command.add(PYTHON3_COMMAND);
-        } else {
-            command.add(PYTHON2_COMMAND);
-        }
-
-        //Add the file path
-        command.add(pythonFile.getPath());
-
-        return command.toArray(new String[command.size()]);
+    private EntryPoint() {
     }
 
+    public static EntryPoint getInstance() {
+        return ourInstance;
+    }
+
+    private Map<String, Serializable> variabels = new HashMap<>();
+
+    public Bindings bindings = new SimpleBindings();
+
+    //Add the objects to the gateway server
+    //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
+    public Map getVariables() {
+        return variabels;
+    }
+
+    public Bindings getBindings() {
+        return bindings;
+    }
 }
