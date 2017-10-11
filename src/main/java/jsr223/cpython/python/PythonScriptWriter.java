@@ -68,11 +68,7 @@ public class PythonScriptWriter {
     }
 
     public void writeLine(String lineContent, BufferedWriter bw) throws IOException {
-        try {
-            bw.write(lineContent);
-            bw.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        bw.write(lineContent);
+        bw.newLine();
     }
 }
