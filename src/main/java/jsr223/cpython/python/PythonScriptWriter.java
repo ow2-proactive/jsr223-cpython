@@ -25,10 +25,10 @@
  */
 package jsr223.cpython.python;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 
 /**
@@ -48,15 +48,31 @@ public class PythonScriptWriter {
         }
 
         // Write python script file to disk
-        Writer pythonScriptFileWriter = new FileWriter(pythonTempFile);
-        pythonScriptFileWriter.write("from py4j.java_gateway import JavaGateway, GatewayParameters" + "\n");
-        pythonScriptFileWriter.write("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))" + "\n");
-        //Add the bindings ot locals() variable in Python
-        pythonScriptFileWriter.write("bindings = gateway.entry_point.getBindings()" + "\n");
-        pythonScriptFileWriter.write("bindings = locals().update(bindings)" + "\n");
-        pythonScriptFileWriter.write(fileContent);
-        pythonScriptFileWriter.close();
-
+        FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
+        BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter);
+        try {
+            writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
+            writeLine("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))",
+                      pythonScriptBufferedWriter);
+            //Add the bindings to locals() variable in Python
+            writeLine("bindings = gateway.entry_point.getBindings()", pythonScriptBufferedWriter);
+            writeLine("bindings = locals().update(bindings)", pythonScriptBufferedWriter);
+            writeLine(fileContent, pythonScriptBufferedWriter);
+        } catch (IOException e) {
+            throw new IOException("Unable to write the python scripts to a file. " + e);
+        } finally {
+            pythonScriptBufferedWriter.close();
+            pythonScriptFileWriter.close();
+        }
         return pythonTempFile;
+    }
+
+    public void writeLine(String lineContent, BufferedWriter bw) throws IOException {
+        try {
+            bw.write(lineContent);
+            bw.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
