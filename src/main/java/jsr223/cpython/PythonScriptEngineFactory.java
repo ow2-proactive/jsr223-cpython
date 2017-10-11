@@ -72,10 +72,10 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
     static {
         //TODO re-write the version
         String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python3");
-        PARAMETERS.put(ScriptEngine.NAME, "jsr223/cpython/python");
-        PARAMETERS.put(ScriptEngine.ENGINE, "jsr223/cpython/python");
+        PARAMETERS.put(ScriptEngine.NAME, "python");
+        PARAMETERS.put(ScriptEngine.ENGINE, "python");
         PARAMETERS.put(ScriptEngine.ENGINE_VERSION, pythonEngineVersion);
-        PARAMETERS.put(ScriptEngine.LANGUAGE, "jsr223/cpython/python");
+        PARAMETERS.put(ScriptEngine.LANGUAGE, "python");
         PARAMETERS.put(ScriptEngine.LANGUAGE_VERSION, pythonEngineVersion);
     }
 
@@ -101,7 +101,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getNames() {
-        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "jsr223/cpython/python", "Python");
+        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "python", "Python");
     }
 
     @Override

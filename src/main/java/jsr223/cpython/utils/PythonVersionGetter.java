@@ -58,7 +58,7 @@ public class PythonVersionGetter {
         if (python2or3.toLowerCase().equals("python3")) {
             PYTHON_VERSION_COMMAND = "python3" + PYTHON_VERSION_COMMAND;
         } else {
-            PYTHON_VERSION_COMMAND = "jsr223/cpython/python" + PYTHON_VERSION_COMMAND;
+            PYTHON_VERSION_COMMAND = "python" + PYTHON_VERSION_COMMAND;
         }
 
         try {

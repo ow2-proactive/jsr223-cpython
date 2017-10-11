@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class PythonCommandCreator {
 
-    private static final String PYTHON2_COMMAND = "jsr223/cpython/python";
+    private static final String PYTHON2_COMMAND = "python";
 
     private static final String PYTHON3_COMMAND = "python3";
 
