@@ -70,8 +70,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
     private static final Map<String, String> PARAMETERS = new HashMap<>();
 
     static {
-        //TODO re-write the version
-        String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python3");
+        String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python");
         PARAMETERS.put(ScriptEngine.NAME, "python");
         PARAMETERS.put(ScriptEngine.ENGINE, "python");
         PARAMETERS.put(ScriptEngine.ENGINE_VERSION, pythonEngineVersion);

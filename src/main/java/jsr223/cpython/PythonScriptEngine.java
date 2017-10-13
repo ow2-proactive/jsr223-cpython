@@ -54,6 +54,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
@@ -99,8 +101,13 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         }
 
         //Create Python Command
-        //TODO change here to automatically choose python version
-        String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, "python3");
+        String pythonVersion = "python";
+        Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+                                                                           .get("genericInformation");
+        if (genericInfo.containsKey("PYTHON_COMMAND")) {
+            pythonVersion = genericInfo.get("PYTHON_COMMAND");
+        }
+        String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
 
         //Create the EntryPoint and start the gateway server
         EntryPoint entryPoint = EntryPoint.getInstance();

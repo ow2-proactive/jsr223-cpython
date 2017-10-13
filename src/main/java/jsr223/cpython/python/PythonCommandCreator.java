@@ -36,10 +36,6 @@ import java.util.List;
  */
 public class PythonCommandCreator {
 
-    private static final String PYTHON2_COMMAND = "python";
-
-    private static final String PYTHON3_COMMAND = "python3";
-
     /**
      * This method is used to create a bash command which executes a python script with a given python file
      * @param pythonFile
@@ -50,11 +46,7 @@ public class PythonCommandCreator {
         List<String> command = new ArrayList<>();
 
         //Add Python Command
-        if (pythonVersion.equals("python3".toLowerCase())) {
-            command.add(PYTHON3_COMMAND);
-        } else {
-            command.add(PYTHON2_COMMAND);
-        }
+        command.add(pythonVersion);
 
         //Add the file path
         command.add(pythonFile.getPath());

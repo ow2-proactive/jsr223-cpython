@@ -25,11 +25,12 @@
  */
 package jsr223.cpython.utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.StringWriter;
 
+import jsr223.cpython.processbuilder.PythonProcessBuilderFactory;
+import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
+import jsr223.cpython.processbuilder.Utils.PythonProcessBuilderUtilities;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -44,38 +45,41 @@ public class PythonVersionGetter {
 
     public static final String PYTHON_VERSION_IF_NOT_INSTALLED = "Could not determine version";
 
-    private String PYTHON_VERSION_COMMAND = " --version"; // this command is needed to retrieve only specific string with python version
+    private String PYTHON_VERSION_COMMAND = "--version"; // this command is needed to retrieve only specific string with python version
+
+    private PythonProcessBuilderFactory factory = SingletonPythonProcessBuilderFactory.getInstance();
+
+    private PythonProcessBuilderUtilities processBuilderUtilities = new PythonProcessBuilderUtilities();
 
     /**
      * Retrieves the Python version
      *
      * @return The currently installed version return by the python command or an string indicates that the version could not be determined.
      */
-    public String getPythonVersion(String python2or3) {
+    public String getPythonVersion(String pythonVersion) {
 
         String result = PYTHON_VERSION_IF_NOT_INSTALLED; //Default error string for result if version recovery fails
 
-        if (python2or3.toLowerCase().equals("python3")) {
-            PYTHON_VERSION_COMMAND = "python3" + PYTHON_VERSION_COMMAND;
-        } else {
-            PYTHON_VERSION_COMMAND = "python" + PYTHON_VERSION_COMMAND;
-        }
-
         try {
-            Process process = Runtime.getRuntime().exec(PYTHON_VERSION_COMMAND);
+            String[] pythonCommand = new String[] { pythonVersion, PYTHON_VERSION_COMMAND };
 
-            //TODO change here, I don't like this try
-            //To show the result
-            InputStream fis = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                //TODO rewrite the restul
-                result = line;
-            }
+            ProcessBuilder processBuilder = factory.getProcessBuilder(pythonCommand);
+            Process process = processBuilder.start();
+
+            StringWriter commandOutput = new StringWriter();
+            StringWriter processError = new StringWriter();
+
+            processBuilderUtilities.attachStreamsToProcess(process, commandOutput, processError, null);
+
+            //Wait for process to exit
+            process.waitFor();
+
+            // Extract output
+            result = commandOutput.toString().equals("") ? processError.toString() : commandOutput.toString();
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
