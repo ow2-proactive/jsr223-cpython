@@ -95,7 +95,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getMimeTypes() {
-        return Collections.singletonList("applecation/python");
+        return Collections.singletonList("application/python");
     }
 
     @Override
