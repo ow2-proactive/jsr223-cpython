@@ -30,6 +30,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.ow2.proactive.scheduler.common.SchedulerConstants;
+import org.ow2.proactive.scheduler.common.task.flow.FlowScript;
+import org.ow2.proactive.scripting.SelectionScript;
+import org.ow2.proactive.scripting.TaskScript;
+
 
 /**
  * @author ActiveEon Team
@@ -55,10 +60,29 @@ public class PythonScriptWriter {
                       pythonScriptBufferedWriter);
             //Add the bindings to locals() variable in Python
             writeLine("bindings = gateway.entry_point.getBindings()", pythonScriptBufferedWriter);
-            writeLine("bindings = locals().update(bindings)", pythonScriptBufferedWriter);
+            writeLine("locals().update(bindings)", pythonScriptBufferedWriter);
             writeLine(fileContent, pythonScriptBufferedWriter);
+            writeLine("if '" + TaskScript.RESULT_VARIABLE + "' in locals():", pythonScriptBufferedWriter);
+            writeLine("    bindings['" + TaskScript.RESULT_VARIABLE + "'] = " + TaskScript.RESULT_VARIABLE + "",
+                      pythonScriptBufferedWriter);
+            writeLine("if '" + SelectionScript.RESULT_VARIABLE + "' in locals():", pythonScriptBufferedWriter);
+            writeLine("    bindings['" + SelectionScript.RESULT_VARIABLE + "'] = " + SelectionScript.RESULT_VARIABLE +
+                      "", pythonScriptBufferedWriter);
+            writeLine("if '" + FlowScript.branchSelectionVariable + "' in locals():", pythonScriptBufferedWriter);
+            writeLine("    bindings['" + FlowScript.branchSelectionVariable + "'] = " +
+                      FlowScript.branchSelectionVariable + "", pythonScriptBufferedWriter);
+            writeLine("if '" + FlowScript.replicateRunsVariable + "' in locals():", pythonScriptBufferedWriter);
+            writeLine("    bindings['" + FlowScript.replicateRunsVariable + "'] = " + FlowScript.replicateRunsVariable +
+                      "", pythonScriptBufferedWriter);
+            writeLine("if '" + FlowScript.loopVariable + "' in locals():", pythonScriptBufferedWriter);
+            writeLine("    bindings['" + FlowScript.loopVariable + "'] = " + FlowScript.loopVariable + "",
+                      pythonScriptBufferedWriter);
+            writeLine("if '" + SchedulerConstants.RESULT_METADATA_VARIABLE + "' in locals():",
+                      pythonScriptBufferedWriter);
+            writeLine("    bindings['" + SchedulerConstants.RESULT_METADATA_VARIABLE + "'] = " +
+                      SchedulerConstants.RESULT_METADATA_VARIABLE + "", pythonScriptBufferedWriter);
         } catch (IOException e) {
-            throw new IOException("Unable to write the python scripts to a file. " + e);
+            throw new IOException("Unable to write the python scripts to a file. " + e.getMessage());
         }
         return pythonTempFile;
     }

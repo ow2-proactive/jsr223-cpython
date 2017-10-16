@@ -50,14 +50,14 @@ public class EntryPoint {
         return ourInstance;
     }
 
-    private Map<String, Serializable> variabels = new HashMap<>();
+    private Map<String, Serializable> variables = new HashMap<>();
 
-    public Bindings bindings = new SimpleBindings();
+    private Bindings bindings = new SimpleBindings();
 
     //Add the objects to the gateway server
     //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
     public Map getVariables() {
-        return variabels;
+        return variables;
     }
 
     public Bindings getBindings() {
