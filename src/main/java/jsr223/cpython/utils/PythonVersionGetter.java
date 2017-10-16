@@ -28,6 +28,8 @@ package jsr223.cpython.utils;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.log4j.Logger;
+
 import jsr223.cpython.processbuilder.PythonProcessBuilderFactory;
 import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
 import jsr223.cpython.processbuilder.Utils.PythonProcessBuilderUtilities;
@@ -42,6 +44,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PythonVersionGetter {
+
+    private static final Logger log = Logger.getLogger(PythonVersionGetter.class);
 
     public static final String PYTHON_VERSION_IF_NOT_INSTALLED = "Could not determine version";
 
@@ -60,11 +64,13 @@ public class PythonVersionGetter {
 
         String result = PYTHON_VERSION_IF_NOT_INSTALLED; //Default error string for result if version recovery fails
 
+        Process process = null;
+
         try {
             String[] pythonCommand = new String[] { pythonVersion, PYTHON_VERSION_COMMAND };
 
             ProcessBuilder processBuilder = factory.getProcessBuilder(pythonCommand);
-            Process process = processBuilder.start();
+            process = processBuilder.start();
 
             StringWriter commandOutput = new StringWriter();
             StringWriter processError = new StringWriter();
@@ -78,9 +84,12 @@ public class PythonVersionGetter {
             result = commandOutput.toString().equals("") ? processError.toString() : commandOutput.toString();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Failed to get Python Version with exception: " + e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info("Python version get execution interrupted. " + e.getMessage());
+            if (process != null) {
+                process.destroy();
+            }
         }
 
         return result;
