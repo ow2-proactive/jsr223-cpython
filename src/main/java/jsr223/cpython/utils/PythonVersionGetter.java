@@ -84,7 +84,7 @@ public class PythonVersionGetter {
             result = commandOutput.toString().equals("") ? processError.toString() : commandOutput.toString();
 
         } catch (IOException e) {
-            log.warn("Failed to get Python Version with exception: " + e);
+            log.warn("Could not determine python version: " + e.getMessage());
         } catch (InterruptedException e) {
             log.info("Python version get execution interrupted. " + e.getMessage());
             if (process != null) {
