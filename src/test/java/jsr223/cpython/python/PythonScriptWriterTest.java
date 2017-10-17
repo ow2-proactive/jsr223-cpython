@@ -15,7 +15,6 @@ import org.junit.Test;
 public class PythonScriptWriterTest {
     private final String fileContent = "This is a test.";
 
-
     @Test
     public void writeFileToDisk() throws Exception {
         PythonScriptWriter pythonScriptWriter = new PythonScriptWriter();
