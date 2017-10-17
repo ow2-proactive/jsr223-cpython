@@ -82,7 +82,7 @@ public class PythonScriptWriter {
             writeLine("    bindings['" + SchedulerConstants.RESULT_METADATA_VARIABLE + "'] = " +
                       SchedulerConstants.RESULT_METADATA_VARIABLE + "", pythonScriptBufferedWriter);
         } catch (IOException e) {
-            throw new IOException("Unable to write the python scripts to a file. " + e.getMessage());
+            throw new IOException("Unable to write the python scripts to a file. ", e);
         }
         return pythonTempFile;
     }
