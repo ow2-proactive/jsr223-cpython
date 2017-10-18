@@ -24,31 +24,6 @@
  * or a different license than the AGPL.
  */
 package jsr223.cpython;
-/*
- * ProActive Parallel Suite(TM):
- * The Open Source library for parallel and distributed
- * Workflows & Scheduling, Orchestration, Cloud Automation
- * and Big Data Analysis on Enterprise Grids & Clouds.
- *
- * Copyright (c) 2007 - 2017 ActiveEon
- * Contact: contact@activeeon.com
- *
- * This library is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation: version 3 of
- * the License.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * If needed, contact us to obtain a release under GPL Version 2 or 3
- * or a different license than the AGPL.
- */
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +40,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
+import org.ow2.proactive.scheduler.common.SchedulerConstants;
 
 import jsr223.cpython.entrypoint.EntryPoint;
 import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
@@ -86,6 +62,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
     private PythonCommandCreator pythonCommandCreator = new PythonCommandCreator();
 
+    private PythonProcessBuilderUtilities processBuilderUtilities = new PythonProcessBuilderUtilities();
+
     public PythonScriptEngine() {
 
     }
@@ -103,7 +81,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         //Create Python Command
         String pythonVersion = "python";
         Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
-                                                                           .get("genericInformation");
+                                                                           .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
         if (genericInfo.containsKey("PYTHON_COMMAND")) {
             pythonVersion = genericInfo.get("PYTHON_COMMAND");
         }
@@ -128,6 +106,14 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
             //Start process
             process = processBuilder.start();
+
+            context.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+            //Attach streams
+            processBuilderUtilities.attachStreamsToProcess(process,
+                                                           context.getWriter(),
+                                                           context.getErrorWriter(),
+                                                           null);
 
             //Wait for the process to exit
             int exitValue = process.waitFor();
@@ -175,8 +161,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         try {
             PythonProcessBuilderUtilities.pipe(reader, stringWriter);
         } catch (IOException e) {
-            log.warn("Filed to convert Reader into StringWriter. Not possible to execute Python script.");
-            log.debug("Filed to convert Reader into StringWriter. Not possible to execute Python script.", e);
+            log.warn("Failed to convert Reader into StringWriter. Not possible to execute Python script.");
+            log.debug("Failed to convert Reader into StringWriter. Not possible to execute Python script.", e);
         }
 
         return eval(stringWriter.toString(), context);
