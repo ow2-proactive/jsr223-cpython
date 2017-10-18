@@ -41,6 +41,7 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 import org.ow2.proactive.scheduler.common.SchedulerConstants;
+import org.ow2.proactive.scripting.TaskScript;
 
 import jsr223.cpython.entrypoint.EntryPoint;
 import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
@@ -95,6 +96,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         //Populate the bindings in the gateway server
         Bindings bindings = entryPoint.getBindings();
         bindings.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
+        if (bindings == null) {
+            throw new ScriptException("No bindings specified in the script context");
+        }
 
         //Create a process builder
         ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance()
@@ -121,7 +125,13 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             if (exitValue != 0) {
                 throw new ScriptException("Python process execution has failed with exit code " + exitValue);
             }
-            return exitValue;
+
+            Object resultValue = true;
+
+            if(context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(TaskScript.RESULT_VARIABLE)){
+                resultValue = context.getBindings(ScriptContext.ENGINE_SCOPE).get(TaskScript.RESULT_VARIABLE);
+            }
+            return resultValue;
 
         } catch (IOException e) {
             throw new ScriptException("Check if Python is installed properly. Failed to execute Python with exception: " +
