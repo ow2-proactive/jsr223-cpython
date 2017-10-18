@@ -82,7 +82,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         String pythonVersion = "python";
         Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                            .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
-        if (genericInfo.containsKey("PYTHON_COMMAND")) {
+        if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
             pythonVersion = genericInfo.get("PYTHON_COMMAND");
         }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
