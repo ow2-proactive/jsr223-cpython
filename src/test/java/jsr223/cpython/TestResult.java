@@ -35,11 +35,12 @@ import org.ow2.proactive.scripting.ScriptResult;
 import org.ow2.proactive.scripting.SimpleScript;
 import org.ow2.proactive.scripting.TaskScript;
 
+
 /**
  * @author ActiveEon Team
  * @since 18/10/2017
  */
-public class TestResults {
+public class TestResult {
 
     @Test
     public void test() throws Exception {
@@ -52,9 +53,7 @@ public class TestResults {
         System.out.println("Script output:");
         System.out.println(res.getResult());
 
-        Assert.assertEquals("The result is returned correctly",
-                123,
-                res.getResult());
+        Assert.assertEquals("The result is returned correctly", 123, res.getResult());
 
     }
 }

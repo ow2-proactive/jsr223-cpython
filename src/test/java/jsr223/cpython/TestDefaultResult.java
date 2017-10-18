@@ -53,9 +53,7 @@ public class TestDefaultResult {
         System.out.println("Script output:");
         System.out.println(res.getResult());
 
-        Assert.assertEquals("By default the result is true",
-                Boolean.TRUE,
-                res.getResult());
+        Assert.assertEquals("By default the result is true", Boolean.TRUE, res.getResult());
 
     }
 }

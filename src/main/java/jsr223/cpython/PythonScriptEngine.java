@@ -128,7 +128,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
             Object resultValue = true;
 
-            if(context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(TaskScript.RESULT_VARIABLE)){
+            if (context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(TaskScript.RESULT_VARIABLE)) {
                 resultValue = context.getBindings(ScriptContext.ENGINE_SCOPE).get(TaskScript.RESULT_VARIABLE);
             }
             return resultValue;
