@@ -25,12 +25,16 @@
  */
 package jsr223.cpython;
 
-import static org.junit.Assert.assertTrue;
-
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.ow2.proactive.scripting.ScriptResult;
 import org.ow2.proactive.scripting.SimpleScript;
@@ -38,27 +42,34 @@ import org.ow2.proactive.scripting.TaskScript;
 
 
 /**
- * Test the output of the Script Engine
  * @author ActiveEon Team
  * @since 18/10/2017
  */
-public class TestOutput {
+public class TestError {
 
     @Test
     public void test() throws Exception {
-        String stringToPrint = "Hello World!";
-        String pythonScript = "print('" + stringToPrint + "')";
+        String messageAfter = "Must not";
+
+        String pythonScript = "while True print 'Hello world'\n" + "print(\"Must not\")\n";
 
         SimpleScript ss = new SimpleScript(pythonScript, PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
         TaskScript taskScript = new TaskScript(ss);
-        ScriptResult<Serializable> res = taskScript.execute();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        System.out.println("Script output:");
-        System.out.println(res.getOutput());
+        ScriptResult<Serializable> res = taskScript.execute(null, new PrintStream(output), new PrintStream(output));
 
-        System.out.println("Script Exception:");
-        System.out.println(res.getException());
+        System.out.println("Script output :");
+        System.out.println(output);
 
-        assertTrue("Python Script output is broken", res.getOutput().toString().contains(stringToPrint));
+        Assert.assertNotNull("The script exception must not be null", res.getException());
+        Assert.assertTrue("The script exception must contain the error statement",
+                          res.getException().getMessage().contains("failed"));
+        Assert.assertTrue("The script output must contain the error statement",
+                          output.toString().contains("SyntaxError"));
+        Assert.assertFalse("The script output must not contain the message after the error",
+                           output.toString().contains(messageAfter));
+
     }
+
 }
