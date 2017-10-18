@@ -28,9 +28,6 @@ package jsr223.cpython;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.script.ScriptEngine;
 
