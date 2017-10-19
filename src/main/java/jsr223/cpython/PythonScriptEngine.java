@@ -41,10 +41,6 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 import org.ow2.proactive.scheduler.common.SchedulerConstants;
-import org.ow2.proactive.scheduler.common.task.flow.FlowScript;
-import org.ow2.proactive.scripting.ScriptResult;
-import org.ow2.proactive.scripting.SelectionScript;
-import org.ow2.proactive.scripting.TaskScript;
 
 import jsr223.cpython.entrypoint.EntryPoint;
 import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
