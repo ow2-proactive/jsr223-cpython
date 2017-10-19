@@ -63,6 +63,7 @@ public class TestResult {
 
     }
 
+
     @Test
     public void testSelectionScriptResult() throws Exception {
         Map<String, Object> aBindings = new HashMap<>();
