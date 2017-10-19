@@ -41,6 +41,9 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 import org.ow2.proactive.scheduler.common.SchedulerConstants;
+import org.ow2.proactive.scheduler.common.task.flow.FlowScript;
+import org.ow2.proactive.scripting.ScriptResult;
+import org.ow2.proactive.scripting.SelectionScript;
 import org.ow2.proactive.scripting.TaskScript;
 
 import jsr223.cpython.entrypoint.EntryPoint;
@@ -94,9 +97,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         gatewayServer.start();
 
         //Populate the bindings in the gateway server
-        Bindings bindings = entryPoint.getBindings();
-        bindings.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
-        if (bindings == null) {
+        Bindings bindingsShared = entryPoint.getBindings();
+        bindingsShared.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
+        if (bindingsShared == null) {
             throw new ScriptException("No bindings specified in the script context");
         }
 
@@ -111,8 +114,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             //Start process
             process = processBuilder.start();
 
-            context.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-
             //Attach streams
             processBuilderUtilities.attachStreamsToProcess(process,
                                                            context.getWriter(),
@@ -126,11 +127,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                 throw new ScriptException("Python process execution has failed with exit code " + exitValue);
             }
 
+            context.getBindings(ScriptContext.ENGINE_SCOPE).putAll(bindingsShared);
+
             Object resultValue = true;
 
-            if (context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(TaskScript.RESULT_VARIABLE)) {
-                resultValue = context.getBindings(ScriptContext.ENGINE_SCOPE).get(TaskScript.RESULT_VARIABLE);
-            }
             return resultValue;
 
         } catch (IOException e) {
