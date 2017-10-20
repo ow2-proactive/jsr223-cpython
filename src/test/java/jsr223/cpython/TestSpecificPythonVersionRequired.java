@@ -25,6 +25,8 @@
  */
 package jsr223.cpython;
 
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -84,6 +86,10 @@ public class TestSpecificPythonVersionRequired {
         String pythonVersionWantToUse = "python3";
 
         ScriptResult<Serializable> res = testHelper(pythonVersionWantToUse);
+
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
 
         System.out.println("Script Output :");
         System.out.println(res.getOutput());

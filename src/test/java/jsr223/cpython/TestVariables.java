@@ -25,6 +25,8 @@
  */
 package jsr223.cpython;
 
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -68,6 +70,11 @@ public class TestVariables {
         ScriptResult<Serializable> res = taskScript.execute(aBindings,
                                                             new PrintStream(output),
                                                             new PrintStream(output));
+
+
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
 
         Assert.assertEquals("The changes in the variables map must be done",
                             expectedVariableValue,
