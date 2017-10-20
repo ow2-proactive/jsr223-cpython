@@ -32,6 +32,7 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.objectweb.proactive.utils.OperatingSystem;
 
 
 /**
@@ -47,8 +48,13 @@ public class PythonCommandCreatorTest {
         String pythonVersion = "python";
         String[] command = pythonCommandCreator.createPythonExecutionCommand(file, pythonVersion);
 
-        assertEquals(command[0], pythonVersion);
-        assertEquals(command[1], file.getPath());
+        if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
+            assertEquals(command[2], pythonVersion);
+            assertEquals(command[3], file.getPath());
+        } else {
+            assertEquals(command[0], pythonVersion);
+            assertEquals(command[1], file.getPath());
+        }
 
     }
 

@@ -35,11 +35,16 @@ import java.util.Map;
 import javax.script.ScriptEngine;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.ow2.proactive.scheduler.common.SchedulerConstants;
+import org.ow2.proactive.scripting.InvalidScriptException;
 import org.ow2.proactive.scripting.ScriptResult;
 import org.ow2.proactive.scripting.SimpleScript;
 import org.ow2.proactive.scripting.TaskScript;
+
+import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
+import jsr223.cpython.python.PythonCommandCreator;
 
 
 /**
@@ -49,10 +54,47 @@ import org.ow2.proactive.scripting.TaskScript;
 public class TestSpecificPythonVersionRequired {
 
     @Test
-    public void test() throws Exception {
-        HashMap<String, Serializable> giMap = new HashMap(1);
+    public void testBadPythonVersionRequiredInGI() throws Exception {
         String pythonVersionWantToUse = "Hello";
-        giMap.put("PYTHON_COMMAND", pythonVersionWantToUse);
+
+        ScriptResult<Serializable> res = testHelper(pythonVersionWantToUse);
+
+        System.out.println("Script Exception :");
+        System.out.println(res.getException());
+
+        Assert.assertTrue("An error occurred with a bad python command requirement", res.errorOccured());
+        Assert.assertTrue("The python script must be executed by the python version required in Generic Info",
+                          res.getException().getMessage().contains("Check if Python is installed properly"));
+
+    }
+
+    @Test
+    public void testPython3() throws Exception {
+        PythonCommandCreator pythonCommandCreator = new PythonCommandCreator();
+        String[] pythonCommand = pythonCommandCreator.createPythonCommandWithParameter(null, "python3", "-h");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonCommand);
+        try {
+            Process p = pb.start();
+            p.waitFor();
+        } catch (Exception e) {
+            Assume.assumeTrue("Python3 should be installed in order to pass this test", e == null);
+        }
+
+        String pythonVersionWantToUse = "python3";
+
+        ScriptResult<Serializable> res = testHelper(pythonVersionWantToUse);
+
+        System.out.println("Script Output :");
+        System.out.println(res.getOutput());
+
+        Assert.assertTrue("The python script must be executed by the python version required in Generic Info",
+                          res.getOutput().toString().contains("Hello world!"));
+    }
+
+    public ScriptResult<Serializable> testHelper(String pythonVersionRequiredInGI) throws InvalidScriptException {
+        HashMap<String, Serializable> giMap = new HashMap(1);
+        giMap.put("PYTHON_COMMAND", pythonVersionRequiredInGI);
 
         Map<String, Object> aBindings = Collections.singletonMap(SchedulerConstants.GENERIC_INFO_BINDING_NAME,
                                                                  (Object) giMap);
@@ -67,13 +109,6 @@ public class TestSpecificPythonVersionRequired {
                                                             new PrintStream(output),
                                                             new PrintStream(output));
 
-        System.out.println("Script Exception :");
-        System.out.println(res.getException());
-
-        Assert.assertTrue("An error occurred with a bad python command requirement", res.errorOccured());
-        Assert.assertTrue("The python script must be executed by the python version required in Generic Info",
-                          res.getException().getMessage().contains("Check if Python is installed properly"));
-
+        return res;
     }
-
 }

@@ -78,7 +78,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             log.warn("Failed to write content to python file: ", e);
         }
 
-        //Create Python Command
+        // Create Python Command.
+        // If we find a specific python which is required in generic info, we need to use this specific version of python.
         String pythonVersion = "python";
         Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                            .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);

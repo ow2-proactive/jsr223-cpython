@@ -25,6 +25,8 @@
  */
 package jsr223.cpython;
 
+import static org.junit.Assert.fail;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +61,10 @@ public class TestResult {
         System.out.println("Script output:");
         System.out.println(res.getResult());
 
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
+
         Assert.assertEquals("By default the result is true", Boolean.TRUE, res.getResult());
 
     }
@@ -73,6 +79,10 @@ public class TestResult {
 
         System.out.println("Script output:");
         System.out.println(res.getResult());
+
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
 
         Assert.assertEquals("The result is returned correctly", 123, res.getResult());
 
@@ -92,6 +102,10 @@ public class TestResult {
         System.out.println("Script output:");
         System.out.println(res.getResult());
 
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
+
         Assert.assertEquals("The result should be false", false, res.getResult());
     }
 
@@ -110,6 +124,10 @@ public class TestResult {
 
         System.out.println("Script output:");
         System.out.println(res.getOutput());
+
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
 
         Assert.assertEquals("The result should contain the loop decision",
                             FlowActionType.LOOP,
@@ -152,6 +170,10 @@ public class TestResult {
         System.out.println("Script output:");
         System.out.println(res.getOutput());
 
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
+
         org.junit.Assert.assertEquals("The result should contain the replicate runs",
                                       2,
                                       res.getResult().getDupNumber());
@@ -172,6 +194,10 @@ public class TestResult {
 
         System.out.println("Script output:");
         System.out.println(res.getOutput());
+
+        if (res.getResult() == null) {
+            fail("The result is null, the Script Engine is not executed correctly!");
+        }
 
         org.junit.Assert.assertEquals("The result should contain the branch decision",
                                       FlowActionType.IF,

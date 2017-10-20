@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.objectweb.proactive.utils.OperatingSystem;
+
 
 /**
  * @author ActiveEon Team
@@ -45,11 +47,37 @@ public class PythonCommandCreator {
     public String[] createPythonExecutionCommand(File pythonFile, String pythonVersion) {
         List<String> command = new ArrayList<>();
 
+        if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
+            // if the operating system is windows, the PATH environment variable is not taken into account unless wrapped in cmd call
+            command.add("cmd");
+            command.add("/c");
+        }
+
         //Add Python Command
         command.add(pythonVersion);
 
         //Add the file path
         command.add(pythonFile.getPath());
+
+        return command.toArray(new String[command.size()]);
+    }
+
+    public String[] createPythonCommandWithParameter(File pythonFile, String pythonVersion, String parameter) {
+        List<String> command = new ArrayList<>();
+
+        if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
+            // if the operating system is windows, the PATH environment variable is not taken into account unless wrapped in cmd call
+            command.add("cmd");
+            command.add("/c");
+        }
+
+        command.add(pythonVersion);
+
+        if (pythonFile != null) {
+            command.add(pythonFile.getPath());
+        }
+
+        command.add(parameter);
 
         return command.toArray(new String[command.size()]);
     }
