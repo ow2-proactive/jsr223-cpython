@@ -71,7 +71,6 @@ public class TestVariables {
                                                             new PrintStream(output),
                                                             new PrintStream(output));
 
-
         if (res.getResult() == null) {
             fail("The result is null, the Script Engine is not executed correctly!");
         }
