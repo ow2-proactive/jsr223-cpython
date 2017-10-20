@@ -42,7 +42,7 @@ import jsr223.cpython.utils.PythonVersionGetter;
  * @since 04/10/2017
  */
 public class PythonScriptEngineFactory implements ScriptEngineFactory {
-    private static final Map<String, String> PARAMETERS = new HashMap<>();
+    static final Map<String, String> PARAMETERS = new HashMap<>();
 
     static {
         String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python");

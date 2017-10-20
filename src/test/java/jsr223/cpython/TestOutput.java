@@ -23,39 +23,42 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package jsr223.cpython.python;
+package jsr223.cpython;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.io.Serializable;
 
-import org.junit.After;
-import org.junit.Before;
+import javax.script.ScriptEngine;
+
 import org.junit.Test;
-import org.objectweb.proactive.utils.OperatingSystem;
+import org.ow2.proactive.scripting.ScriptResult;
+import org.ow2.proactive.scripting.SimpleScript;
+import org.ow2.proactive.scripting.TaskScript;
 
 
 /**
+ * Test the output of the Script Engine
  * @author ActiveEon Team
- * @since 17/10/2017
+ * @since 18/10/2017
  */
-public class PythonCommandCreatorTest {
-    private final PythonCommandCreator pythonCommandCreator = new PythonCommandCreator();
+public class TestOutput {
 
     @Test
-    public void createPythonExecutionCommand() throws Exception {
-        File file = new File("test.py");
-        String pythonVersion = "python";
-        String[] command = pythonCommandCreator.createPythonExecutionCommand(file, pythonVersion);
+    public void testOutput() throws Exception {
+        String stringToPrint = "Hello World!";
+        String pythonScript = "print('" + stringToPrint + "')";
 
-        if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
-            assertEquals(command[2], pythonVersion);
-            assertEquals(command[3], file.getPath());
-        } else {
-            assertEquals(command[0], pythonVersion);
-            assertEquals(command[1], file.getPath());
-        }
+        SimpleScript ss = new SimpleScript(pythonScript, PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
+        TaskScript taskScript = new TaskScript(ss);
+        ScriptResult<Serializable> res = taskScript.execute();
 
+        System.out.println("Script output:");
+        System.out.println(res.getOutput());
+
+        System.out.println("Script Exception:");
+        System.out.println(res.getException());
+
+        assertTrue("Python Script output is broken", res.getOutput().toString().contains(stringToPrint));
     }
-
 }

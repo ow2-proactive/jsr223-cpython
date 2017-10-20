@@ -55,6 +55,7 @@ public class PythonScriptWriter {
         // Write python script file to disk
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
+            writeLine("import sys", pythonScriptBufferedWriter);
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
             writeLine("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))",
                       pythonScriptBufferedWriter);
@@ -81,6 +82,7 @@ public class PythonScriptWriter {
                       pythonScriptBufferedWriter);
             writeLine("    bindings['" + SchedulerConstants.RESULT_METADATA_VARIABLE + "'] = " +
                       SchedulerConstants.RESULT_METADATA_VARIABLE + "", pythonScriptBufferedWriter);
+            writeLine("sys.exit()", pythonScriptBufferedWriter);
         } catch (IOException e) {
             throw new IOException("Unable to write the python scripts to a file. ", e);
         }

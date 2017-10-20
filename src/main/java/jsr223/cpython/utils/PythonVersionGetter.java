@@ -49,7 +49,7 @@ public class PythonVersionGetter {
 
     public static final String PYTHON_VERSION_IF_NOT_INSTALLED = "Could not determine version";
 
-    private String PYTHON_VERSION_COMMAND = "--version"; // this command is needed to retrieve only specific string with python version
+    private final String PYTHON_VERSION_COMMAND = "--version"; // this command is needed to retrieve only specific string with python version
 
     private PythonProcessBuilderFactory factory = SingletonPythonProcessBuilderFactory.getInstance();
 
@@ -83,10 +83,8 @@ public class PythonVersionGetter {
             // Extract output
             result = commandOutput.toString().equals("") ? processError.toString() : commandOutput.toString();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.warn("Could not determine python version: " + e.getMessage());
-        } catch (InterruptedException e) {
-            log.info("Python version get execution interrupted. " + e.getMessage());
             if (process != null) {
                 process.destroy();
             }

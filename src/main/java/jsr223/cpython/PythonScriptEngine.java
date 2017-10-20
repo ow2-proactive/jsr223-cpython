@@ -78,11 +78,12 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             log.warn("Failed to write content to python file: ", e);
         }
 
-        //Create Python Command
+        // Create Python Command.
+        // If we find a specific python which is required in generic info, we need to use this specific version of python.
         String pythonVersion = "python";
         Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                            .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
-        if (genericInfo.containsKey("PYTHON_COMMAND")) {
+        if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
             pythonVersion = genericInfo.get("PYTHON_COMMAND");
         }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
@@ -93,8 +94,11 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         gatewayServer.start();
 
         //Populate the bindings in the gateway server
-        Bindings bindings = entryPoint.getBindings();
-        bindings.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
+        Bindings bindingsShared = entryPoint.getBindings();
+        bindingsShared.putAll(context.getBindings(ScriptContext.ENGINE_SCOPE));
+        if (bindingsShared == null) {
+            throw new ScriptException("No bindings specified in the script context");
+        }
 
         //Create a process builder
         ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance()
@@ -106,8 +110,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
             //Start process
             process = processBuilder.start();
-
-            context.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
             //Attach streams
             processBuilderUtilities.attachStreamsToProcess(process,
@@ -121,7 +123,12 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             if (exitValue != 0) {
                 throw new ScriptException("Python process execution has failed with exit code " + exitValue);
             }
-            return exitValue;
+
+            context.getBindings(ScriptContext.ENGINE_SCOPE).putAll(bindingsShared);
+
+            Object resultValue = true;
+
+            return resultValue;
 
         } catch (IOException e) {
             throw new ScriptException("Check if Python is installed properly. Failed to execute Python with exception: " +
