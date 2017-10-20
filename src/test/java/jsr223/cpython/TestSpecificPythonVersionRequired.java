@@ -65,8 +65,6 @@ public class TestSpecificPythonVersionRequired {
         System.out.println(res.getException());
 
         Assert.assertTrue("An error occurred with a bad python command requirement", res.errorOccured());
-        Assert.assertTrue("The python script must be executed by the python version required in Generic Info",
-                          res.getException().getMessage().contains("Check if Python is installed properly"));
 
     }
 
