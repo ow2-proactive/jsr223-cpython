@@ -49,6 +49,21 @@ import org.ow2.proactive.scripting.TaskScript;
 public class TestResult {
 
     @Test
+    public void testDefaultResult() throws Exception {
+        String emptyScript = "";
+
+        SimpleScript ss = new SimpleScript(emptyScript, PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
+        TaskScript taskScript = new TaskScript(ss);
+        ScriptResult<Serializable> res = taskScript.execute();
+
+        System.out.println("Script output:");
+        System.out.println(res.getResult());
+
+        Assert.assertEquals("By default the result is true", Boolean.TRUE, res.getResult());
+
+    }
+
+    @Test
     public void testTaskResult() throws Exception {
         String pythonScript = "result = 123";
 
