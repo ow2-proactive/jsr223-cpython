@@ -51,7 +51,7 @@ import org.ow2.proactive.scripting.TaskScript;
 public class TestVariables {
 
     @Test
-    public void test() throws Exception {
+    public void testVariables() throws Exception {
         HashMap<String, Serializable> variablesMap = new HashMap<String, Serializable>(1);
         String initialValue = "badValue";
         variablesMap.put("toto", initialValue);

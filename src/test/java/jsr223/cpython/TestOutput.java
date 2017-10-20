@@ -45,7 +45,7 @@ import org.ow2.proactive.scripting.TaskScript;
 public class TestOutput {
 
     @Test
-    public void test() throws Exception {
+    public void testOutput() throws Exception {
         String stringToPrint = "Hello World!";
         String pythonScript = "print('" + stringToPrint + "')";
 
