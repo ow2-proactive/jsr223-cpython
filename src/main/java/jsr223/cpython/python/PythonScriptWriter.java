@@ -42,7 +42,7 @@ import org.ow2.proactive.scripting.TaskScript;
  */
 public class PythonScriptWriter {
     //Extension
-    public static final String PYTHON_FILE_EXTENSION = ".py";
+    public static final String PYTHON_FILE_EXTENSION = ".cpy";
 
     public File writeFileToDisk(String fileContent) throws IOException {
         File pythonTempFile = null;

@@ -46,10 +46,10 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     static {
         String pythonEngineVersion = new PythonVersionGetter().getPythonVersion("python");
-        PARAMETERS.put(ScriptEngine.NAME, "python");
-        PARAMETERS.put(ScriptEngine.ENGINE, "python");
+        PARAMETERS.put(ScriptEngine.NAME, "cpython");
+        PARAMETERS.put(ScriptEngine.ENGINE, "cpython");
         PARAMETERS.put(ScriptEngine.ENGINE_VERSION, pythonEngineVersion);
-        PARAMETERS.put(ScriptEngine.LANGUAGE, "python");
+        PARAMETERS.put(ScriptEngine.LANGUAGE, "cpython");
         PARAMETERS.put(ScriptEngine.LANGUAGE_VERSION, pythonEngineVersion);
     }
 
@@ -65,7 +65,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getExtensions() {
-        return Arrays.asList("py");
+        return Arrays.asList("cpy");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class PythonScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getNames() {
-        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "python", "Python");
+        return Arrays.asList(PARAMETERS.get(ScriptEngine.NAME), "cpython", "CPython");
     }
 
     @Override
