@@ -28,6 +28,7 @@ package jsr223.cpython;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,10 +82,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         // Create Python Command.
         // If we find a specific python which is required in generic info, we need to use this specific version of python.
         String pythonVersion = "python";
-        Map<String, String> genericInfo = (HashMap<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+        Map<String, Serializable> genericInfo = (HashMap<String, Serializable>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                            .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
         if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
-            pythonVersion = genericInfo.get("PYTHON_COMMAND");
+            pythonVersion = (String) genericInfo.get("PYTHON_COMMAND");
         }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
 
