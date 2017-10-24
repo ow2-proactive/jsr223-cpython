@@ -82,8 +82,8 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         // Create Python Command.
         // If we find a specific python which is required in generic info, we need to use this specific version of python.
         String pythonVersion = "python";
-        Map<String, Serializable> genericInfo = (Map<String, Serializable>) context.getBindings(ScriptContext.ENGINE_SCOPE)
-                                                                           .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
+        Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+                                                                       .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
         if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
             pythonVersion = (String) genericInfo.get("PYTHON_COMMAND");
         }
