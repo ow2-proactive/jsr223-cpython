@@ -67,8 +67,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
     }
 
-    private static synchronized GatewayServer getGatewayServer(EntryPoint entryPoint) {
+    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {
         GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+        gatewayServer.start();
         return gatewayServer;
     }
 
@@ -78,10 +79,11 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         EntryPoint entryPoint = new EntryPoint();
 
         //Create the EntryPoint and start the gateway server
-        GatewayServer gatewayServer = getGatewayServer(entryPoint);
-        gatewayServer.start();
+        GatewayServer gatewayServer = startGatewayServer(entryPoint);
+
+        //Retrieve the port used by the gateway server
         int port = gatewayServer.getListeningPort();
-        log.info("Current port in using is : " + port);
+        log.info("Python gateway server started using port : " + port);
 
         // Write script to file
         File pythonFile = null;
