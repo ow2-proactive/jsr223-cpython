@@ -67,12 +67,27 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
     }
 
+    private static synchronized GatewayServer getGatewayServer(EntryPoint entryPoint) {
+        GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+        return gatewayServer;
+    }
+
     @Override
     public Object eval(String script, ScriptContext context) throws ScriptException {
+
+        EntryPoint entryPoint = new EntryPoint();
+
+        //Create the EntryPoint and start the gateway server
+        GatewayServer gatewayServer = getGatewayServer(entryPoint);
+        gatewayServer.start();
+        int port = gatewayServer.getListeningPort();
+        log.info("Current port in using is : " + port);
+
+        // Write script to file
         File pythonFile = null;
 
         try {
-            pythonFile = pythonScriptWriter.writeFileToDisk(script);
+            pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
         } catch (IOException e) {
             log.warn("Failed to write content to python file: ", e);
         }
@@ -83,14 +98,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                        .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
         if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
-            pythonVersion = (String) genericInfo.get("PYTHON_COMMAND");
+            pythonVersion = genericInfo.get("PYTHON_COMMAND");
         }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
-
-        //Create the EntryPoint and start the gateway server
-        EntryPoint entryPoint = EntryPoint.getInstance();
-        GatewayServer gatewayServer = new GatewayServer(entryPoint, 25335);
-        gatewayServer.start();
 
         //Populate the bindings in the gateway server
         Bindings bindingsShared = entryPoint.getBindings();

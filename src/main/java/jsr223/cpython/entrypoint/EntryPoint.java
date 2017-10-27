@@ -38,17 +38,6 @@ import javax.script.SimpleBindings;
  * @since 05/10/2017
  */
 public class EntryPoint {
-    /**
-     * Singleton
-     */
-    private static EntryPoint ourInstance = new EntryPoint();
-
-    private EntryPoint() {
-    }
-
-    public static EntryPoint getInstance() {
-        return ourInstance;
-    }
 
     private Map<String, Serializable> variables = new HashMap<>();
 
