@@ -28,9 +28,7 @@ package jsr223.cpython;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.AbstractScriptEngine;
@@ -69,12 +67,29 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
     }
 
+    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {
+        GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+        gatewayServer.start();
+        return gatewayServer;
+    }
+
     @Override
     public Object eval(String script, ScriptContext context) throws ScriptException {
+
+        EntryPoint entryPoint = new EntryPoint();
+
+        //Create the EntryPoint and start the gateway server
+        GatewayServer gatewayServer = startGatewayServer(entryPoint);
+
+        //Retrieve the port used by the gateway server
+        int port = gatewayServer.getListeningPort();
+        log.info("Python gateway server started using port : " + port);
+
+        // Write script to file
         File pythonFile = null;
 
         try {
-            pythonFile = pythonScriptWriter.writeFileToDisk(script);
+            pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
         } catch (IOException e) {
             log.warn("Failed to write content to python file: ", e);
         }
@@ -85,14 +100,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
                                                                        .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
         if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
-            pythonVersion = (String) genericInfo.get("PYTHON_COMMAND");
+            pythonVersion = genericInfo.get("PYTHON_COMMAND");
         }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
-
-        //Create the EntryPoint and start the gateway server
-        EntryPoint entryPoint = EntryPoint.getInstance();
-        GatewayServer gatewayServer = new GatewayServer(entryPoint, 25335);
-        gatewayServer.start();
 
         //Populate the bindings in the gateway server
         Bindings bindingsShared = entryPoint.getBindings();
