@@ -44,6 +44,7 @@ import org.ow2.proactive.scripting.ScriptResult;
 import org.ow2.proactive.scripting.SimpleScript;
 import org.ow2.proactive.scripting.TaskScript;
 
+
 /**
  * @author ActiveEon Team
  * @since 27/10/2017
@@ -55,13 +56,14 @@ public class TestMultipleCall {
     public void testMultipleCall() throws InterruptedException, ExecutionException {
         List<Callable<ScriptResult<Serializable>>> tasks = new ArrayList<>();
 
-        for(int i = 0; i<20; i++) {
+        for (int i = 0; i < 20; i++) {
             tasks.add(new Callable<ScriptResult<Serializable>>() {
                 @Override
                 public ScriptResult<Serializable> call() throws Exception {
                     String pythonScript = "result = 123";
 
-                    SimpleScript ss = new SimpleScript(pythonScript, PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
+                    SimpleScript ss = new SimpleScript(pythonScript,
+                                                       PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
                     TaskScript taskScript = new TaskScript(ss);
                     return taskScript.execute();
                 }
@@ -70,7 +72,7 @@ public class TestMultipleCall {
 
         List<Future<ScriptResult<Serializable>>> res = executors.invokeAll(tasks);
 
-        for(Future<ScriptResult<Serializable>> result : res) {
+        for (Future<ScriptResult<Serializable>> result : res) {
 
             System.out.println("Script output:");
             System.out.println(result.get().getResult());
