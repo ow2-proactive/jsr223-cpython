@@ -61,6 +61,18 @@ release {
     newVersionCommitMessage = '[ci skip][Gradle Release Plugin] - new version commit: '
 }
 
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        main.compileClasspath += configurations.provided
+        test.compileClasspath += configurations.provided
+        test.runtimeClasspath += configurations.provided
+    }
+}
+
 dependencies {
     compile group: 'net.sf.py4j', name: 'py4j', version: '0.10.6'
     compile 'org.projectlombok:lombok:1.16.6'
