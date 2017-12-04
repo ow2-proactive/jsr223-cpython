@@ -39,7 +39,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:1.2"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
         classpath 'net.researchgate:gradle-release:2.2.1'
         // Code Formatting dependencies
         classpath "com.diffplug.gradle.spotless:spotless:2.4.0"
