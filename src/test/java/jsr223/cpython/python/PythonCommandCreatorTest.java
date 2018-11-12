@@ -48,7 +48,7 @@ public class PythonCommandCreatorTest {
 
         if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
             assertEquals(command[2], pythonVersion);
-            assertEquals(command[3], file.getPath());
+            assertEquals(command[4], file.getPath());
         } else {
             assertEquals(command[0], pythonVersion);
             assertEquals(command[2], file.getPath());
