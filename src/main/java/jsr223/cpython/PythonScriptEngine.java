@@ -25,6 +25,8 @@
  */
 package jsr223.cpython;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -126,7 +128,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             processBuilderUtilities.attachStreamsToProcess(process,
                                                            context.getWriter(),
                                                            context.getErrorWriter(),
-                                                           null);
+                                                           context.getReader());
 
             //Wait for the process to exit
             int exitValue = process.waitFor();
@@ -177,7 +179,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         StringWriter stringWriter = new StringWriter();
 
         try {
-            PythonProcessBuilderUtilities.pipe(reader, stringWriter);
+            PythonProcessBuilderUtilities.pipe(new BufferedReader(reader), new BufferedWriter(stringWriter));
         } catch (IOException e) {
             log.warn("Failed to convert Reader into StringWriter. Not possible to execute Python script.");
             log.debug("Failed to convert Reader into StringWriter. Not possible to execute Python script.", e);

@@ -53,7 +53,7 @@ public class PythonCommandCreatorTest {
             assertEquals(command[3], file.getPath());
         } else {
             assertEquals(command[0], pythonVersion);
-            assertEquals(command[1], file.getPath());
+            assertEquals(command[2], file.getPath());
         }
 
     }
