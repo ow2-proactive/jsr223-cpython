@@ -29,8 +29,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.proactive.utils.OperatingSystem;
 
@@ -50,10 +48,10 @@ public class PythonCommandCreatorTest {
 
         if (OperatingSystem.getOperatingSystem() == OperatingSystem.windows) {
             assertEquals(command[2], pythonVersion);
-            assertEquals(command[3], file.getPath());
+            assertEquals(command[4], file.getPath());
         } else {
             assertEquals(command[0], pythonVersion);
-            assertEquals(command[1], file.getPath());
+            assertEquals(command[2], file.getPath());
         }
 
     }

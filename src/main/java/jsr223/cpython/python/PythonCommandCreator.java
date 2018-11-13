@@ -56,6 +56,9 @@ public class PythonCommandCreator {
         //Add Python Command
         command.add(pythonVersion);
 
+        //To have the streaming output
+        command.add("-u");
+
         //Add the file path
         command.add(pythonFile.getPath());
 
@@ -72,6 +75,9 @@ public class PythonCommandCreator {
         }
 
         command.add(pythonVersion);
+
+        //To have the streaming output
+        command.add("-u");
 
         if (pythonFile != null) {
             command.add(pythonFile.getPath());

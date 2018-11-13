@@ -25,7 +25,6 @@
  */
 package jsr223.cpython.utils;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.log4j.Logger;

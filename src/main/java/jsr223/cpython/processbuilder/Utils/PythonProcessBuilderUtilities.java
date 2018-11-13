@@ -25,6 +25,8 @@
  */
 package jsr223.cpython.processbuilder.Utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -49,7 +51,7 @@ public class PythonProcessBuilderUtilities {
         new Thread() {
             public void run() {
                 try {
-                    pipe(source, attachedSink);
+                    pipe(new BufferedReader(source), new BufferedWriter(attachedSink));
                 } catch (IOException ignored) {
                     //The exception is ignored as for native scripts
                 }
@@ -86,20 +88,24 @@ public class PythonProcessBuilderUtilities {
      */
     public void attachStreamsToProcess(Process process, Writer processOutput, Writer processError,
             Reader processInput) {
+        if (processInput != null) {
+            // Attach process input
+            attachToInputStream(new BufferedReader(processInput),
+                                new BufferedWriter(new OutputStreamWriter(process.getOutputStream())));
+        }
+
         if (processOutput != null) {
             // Attach to std output
-            attachToInputStream(new InputStreamReader(process.getInputStream()), processOutput);
+            attachToInputStream(new BufferedReader(new InputStreamReader(process.getInputStream())),
+                                new BufferedWriter(processOutput));
         }
 
         if (processError != null) {
             // Attach error output
-            attachToInputStream(new InputStreamReader(process.getErrorStream()), processError);
+            attachToInputStream(new BufferedReader(new InputStreamReader(process.getErrorStream())),
+                                new BufferedWriter(processError));
         }
 
-        if (processInput != null) {
-            // Attach process input
-            attachToInputStream(processInput, new OutputStreamWriter(process.getOutputStream()));
-        }
     }
 
 }
