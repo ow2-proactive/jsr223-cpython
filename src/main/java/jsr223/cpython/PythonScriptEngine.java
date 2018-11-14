@@ -76,8 +76,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                                ". Any output for the python script engine is disabled.");
         } catch (Exception e) {
             System.err.println("Log4j initialization failed: " + log4jConfigurationFile +
-                               ". Python script engine is functional but logging is disabled." +
-                               "Stacktrace is: ");
+                               ". Python script engine is functional but logging is disabled." + "Stacktrace is: ");
             e.printStackTrace();
         }
     }
