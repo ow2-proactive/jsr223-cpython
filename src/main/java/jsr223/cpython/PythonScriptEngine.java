@@ -68,17 +68,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
     private static final String log4jConfigurationFile = "config/log/scriptengines.properties";
 
     public PythonScriptEngine() {
-        try {
-            org.apache.log4j.PropertyConfigurator.configure(getClass().getClassLoader()
-                                                                      .getResourceAsStream(log4jConfigurationFile));
-        } catch (NullPointerException e) {
-            System.err.println("Log4j configuration file not found: " + log4jConfigurationFile +
-                               ". Any output for the python script engine is disabled.");
-        } catch (Exception e) {
-            System.err.println("Log4j initialization failed: " + log4jConfigurationFile +
-                               ". Python script engine is functional but logging is disabled." + "Stacktrace is: ");
-            e.printStackTrace();
-        }
     }
 
     private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {
