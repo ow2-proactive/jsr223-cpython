@@ -65,8 +65,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
     private PythonProcessBuilderUtilities processBuilderUtilities = new PythonProcessBuilderUtilities();
 
-    private static final String log4jConfigurationFile = "config/log/scriptengines.properties";
-
     public PythonScriptEngine() {
     }
 
