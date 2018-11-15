@@ -66,7 +66,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
     private PythonProcessBuilderUtilities processBuilderUtilities = new PythonProcessBuilderUtilities();
 
     public PythonScriptEngine() {
-
     }
 
     private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {

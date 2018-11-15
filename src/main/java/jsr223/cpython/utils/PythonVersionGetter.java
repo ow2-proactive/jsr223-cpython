@@ -83,7 +83,7 @@ public class PythonVersionGetter {
             result = commandOutput.toString().equals("") ? processError.toString() : commandOutput.toString();
 
         } catch (Exception e) {
-            log.warn("Could not determine python version: " + e.getMessage());
+            log.debug("Could not determine python version: " + e.getMessage());
             if (process != null) {
                 process.destroy();
             }
