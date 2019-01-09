@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
@@ -68,8 +69,12 @@ public class PythonScriptEngine extends AbstractScriptEngine {
     public PythonScriptEngine() {
     }
 
-    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {
-        GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint, String authToken) {
+        //GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+        GatewayServer gatewayServer = new GatewayServer.GatewayServerBuilder().javaPort(0)
+                                                                              .entryPoint(entryPoint)
+                                                                              .authToken(authToken)
+                                                                              .build();
         gatewayServer.start();
         return gatewayServer;
     }
@@ -79,8 +84,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
         EntryPoint entryPoint = new EntryPoint();
 
+        String authToken = UUID.randomUUID().toString();
+
         //Create the EntryPoint and start the gateway server
-        GatewayServer gatewayServer = startGatewayServer(entryPoint);
+        GatewayServer gatewayServer = startGatewayServer(entryPoint, authToken);
 
         //Retrieve the port used by the gateway server
         int port = gatewayServer.getListeningPort();
@@ -90,7 +97,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         File pythonFile = null;
 
         try {
-            pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
+            pythonFile = pythonScriptWriter.writeFileToDisk(script, port, authToken);
         } catch (IOException e) {
             log.warn("Failed to write content to python file: ", e);
         }
