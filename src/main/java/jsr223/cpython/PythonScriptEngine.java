@@ -72,10 +72,9 @@ public class PythonScriptEngine extends AbstractScriptEngine {
     }
 
     private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint, String authToken) {
-        //GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
-        GatewayServer gatewayServer = new GatewayServer.GatewayServerBuilder().javaPort(0)
-                                                                              .entryPoint(entryPoint)
+        GatewayServer gatewayServer = new GatewayServer.GatewayServerBuilder().entryPoint(entryPoint)
                                                                               .authToken(authToken)
+                                                                              .javaPort(0)
                                                                               .build();
         gatewayServer.start();
         return gatewayServer;

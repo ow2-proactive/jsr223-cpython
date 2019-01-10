@@ -57,8 +57,9 @@ public class PythonScriptWriter {
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
             writeLine("import sys", pythonScriptBufferedWriter);
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
-            writeLine("gateway = JavaGateway(gateway_parameters=GatewayParameters(port=" + port + ", auth_token = \" " +
-                      authToken + "\", auto_convert=True))", pythonScriptBufferedWriter);
+            writeLine("params = GatewayParameters(auth_token=\"" + authToken + "\", port=" + port +
+                      ", auto_convert=True)", pythonScriptBufferedWriter);
+            writeLine("gateway = JavaGateway(gateway_parameters=params)", pythonScriptBufferedWriter);
             //Add the bindings to locals() variable in Python
             writeLine("bindings = gateway.entry_point.getBindings()", pythonScriptBufferedWriter);
             writeLine("locals().update(bindings)", pythonScriptBufferedWriter);
