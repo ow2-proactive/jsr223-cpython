@@ -43,6 +43,8 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 import org.ow2.proactive.scheduler.common.SchedulerConstants;
+import org.ow2.proactive.scheduler.task.SchedulerVars;
+import org.ow2.proactive.utils.CookieBasedProcessTreeKiller;
 
 import jsr223.cpython.entrypoint.EntryPoint;
 import jsr223.cpython.processbuilder.SingletonPythonProcessBuilderFactory;
@@ -124,11 +126,28 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                                                                             .getProcessBuilder(pythonCommand);
 
         Process process = null;
+        Thread shutdownHook = null;
+        CookieBasedProcessTreeKiller processTreeKiller = null;
 
         try {
 
+            processTreeKiller = createProcessTreeKiller(context, processBuilder.environment());
+
             //Start process
             process = processBuilder.start();
+
+            final Process shutdownHookProcessReference = process;
+            final CookieBasedProcessTreeKiller shutdownHookPTKReference = processTreeKiller;
+            shutdownHook = new Thread() {
+                @Override
+                public void run() {
+                    destroyProcessAndWaitForItToBeDestroyed(shutdownHookProcessReference);
+                    if (shutdownHookPTKReference != null) {
+                        shutdownHookPTKReference.kill();
+                    }
+                }
+            };
+            Runtime.getRuntime().addShutdownHook(shutdownHook);
 
             //Attach streams
             processBuilderUtilities.attachStreamsToProcess(process,
@@ -175,8 +194,42 @@ public class PythonScriptEngine extends AbstractScriptEngine {
             }
             //Stop the gateway server
             gatewayServer.shutdown();
+
+            if (shutdownHook != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdownHook);
+            }
+
+            if (processTreeKiller != null) {
+                processTreeKiller.kill();
+            }
         }
         return null;
+    }
+
+    private static void destroyProcessAndWaitForItToBeDestroyed(Process process) {
+        try {
+            process.destroy();
+            process.waitFor();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private CookieBasedProcessTreeKiller createProcessTreeKiller(ScriptContext context,
+            Map<String, String> environment) {
+        CookieBasedProcessTreeKiller processTreeKiller = null;
+        Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+                                                                       .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
+        Map<String, String> variables = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+                                                                     .get(SchedulerConstants.VARIABLES_BINDING_NAME);
+
+        if (genericInfo != null && variables != null &&
+            !"true".equalsIgnoreCase(genericInfo.get(SchedulerConstants.DISABLE_PROCESS_TREE_KILLER_GENERIC_INFO))) {
+            String cookieSuffix = "CPython_Job" + variables.get(SchedulerVars.PA_JOB_ID) + "Task" +
+                                  variables.get(SchedulerVars.PA_TASK_ID);
+            processTreeKiller = CookieBasedProcessTreeKiller.createProcessChildrenKiller(cookieSuffix, environment);
+        }
+        return processTreeKiller;
     }
 
     @Override
