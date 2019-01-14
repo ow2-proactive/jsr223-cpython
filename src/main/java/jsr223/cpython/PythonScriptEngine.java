@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
@@ -70,8 +71,11 @@ public class PythonScriptEngine extends AbstractScriptEngine {
     public PythonScriptEngine() {
     }
 
-    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint) {
-        GatewayServer gatewayServer = new GatewayServer(entryPoint, 0);
+    private static synchronized GatewayServer startGatewayServer(EntryPoint entryPoint, String authToken) {
+        GatewayServer gatewayServer = new GatewayServer.GatewayServerBuilder().entryPoint(entryPoint)
+                                                                              .authToken(authToken)
+                                                                              .javaPort(0)
+                                                                              .build();
         gatewayServer.start();
         return gatewayServer;
     }
@@ -81,8 +85,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
 
         EntryPoint entryPoint = new EntryPoint();
 
+        String authToken = UUID.randomUUID().toString();
+
         //Create the EntryPoint and start the gateway server
-        GatewayServer gatewayServer = startGatewayServer(entryPoint);
+        GatewayServer gatewayServer = startGatewayServer(entryPoint, authToken);
 
         //Retrieve the port used by the gateway server
         int port = gatewayServer.getListeningPort();
@@ -117,6 +123,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         //Create a process builder
         ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance()
                                                                             .getProcessBuilder(pythonCommand);
+
+        Map<String, String> env = processBuilder.environment();
+
+        env.put("CPYTHON_TOKEN", authToken);
 
         Process process = null;
         Thread shutdownHook = null;
