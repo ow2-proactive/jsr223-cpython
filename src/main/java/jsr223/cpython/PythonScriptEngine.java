@@ -98,7 +98,7 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         File pythonFile = null;
 
         try {
-            pythonFile = pythonScriptWriter.writeFileToDisk(script, port, authToken);
+            pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
         } catch (IOException e) {
             log.warn("Failed to write content to python file: ", e);
         }
@@ -123,6 +123,10 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         //Create a process builder
         ProcessBuilder processBuilder = SingletonPythonProcessBuilderFactory.getInstance()
                                                                             .getProcessBuilder(pythonCommand);
+
+        Map<String, String> env = processBuilder.environment();
+
+        env.put("CPYTHON_TOKEN", authToken);
 
         Process process = null;
         Thread shutdownHook = null;

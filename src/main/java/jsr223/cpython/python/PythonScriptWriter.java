@@ -44,7 +44,7 @@ public class PythonScriptWriter {
     //Extension
     public static final String PYTHON_FILE_EXTENSION = ".cpy";
 
-    public File writeFileToDisk(String fileContent, int port, String authToken) throws IOException {
+    public File writeFileToDisk(String fileContent, int port) throws IOException {
         File pythonTempFile = null;
         try {
             pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
@@ -56,8 +56,10 @@ public class PythonScriptWriter {
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
             writeLine("import sys", pythonScriptBufferedWriter);
+            writeLine("import os", pythonScriptBufferedWriter);
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
-            writeLine("params = GatewayParameters(auth_token=\"" + authToken + "\", port=" + port +
+
+            writeLine("params = GatewayParameters(auth_token = os.environ['CPYTHON_TOKEN'], port=" + port +
                       ", auto_convert=True)", pythonScriptBufferedWriter);
             writeLine("gateway = JavaGateway(gateway_parameters=params)", pythonScriptBufferedWriter);
             //Add the bindings to locals() variable in Python

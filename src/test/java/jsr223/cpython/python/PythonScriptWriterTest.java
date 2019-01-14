@@ -47,7 +47,7 @@ public class PythonScriptWriterTest {
     public void writeFileToDisk() throws Exception {
         PythonScriptWriter pythonScriptWriter = new PythonScriptWriter();
 
-        File file = pythonScriptWriter.writeFileToDisk(fileContent, 25335, "");
+        File file = pythonScriptWriter.writeFileToDisk(fileContent, 25335);
         file.deleteOnExit();
 
         assertTrue(new File(file.getAbsolutePath()).exists());
