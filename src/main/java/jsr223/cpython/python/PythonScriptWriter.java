@@ -44,7 +44,15 @@ public class PythonScriptWriter {
     //Extension
     public static final String PYTHON_FILE_EXTENSION = ".cpy";
 
+    public File writeFileToDisk(String fileContent) throws IOException {
+        return writeFileToDisk(fileContent, 0, null);
+    }
+
     public File writeFileToDisk(String fileContent, int port) throws IOException {
+        return writeFileToDisk(fileContent, port, null);
+    }
+
+    public File writeFileToDisk(String fileContent, int port, String authToken) throws IOException {
         File pythonTempFile = null;
         try {
             pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
@@ -55,11 +63,9 @@ public class PythonScriptWriter {
         // Write python script file to disk
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
-            writeLine("import sys", pythonScriptBufferedWriter);
-            writeLine("import os", pythonScriptBufferedWriter);
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
 
-            writeLine("params = GatewayParameters(auth_token = os.environ['CPYTHON_TOKEN'], port=" + port +
+            writeLine("params = GatewayParameters(auth_token = '" + authToken + "', port=" + port +
                       ", auto_convert=True)", pythonScriptBufferedWriter);
             writeLine("gateway = JavaGateway(gateway_parameters=params)", pythonScriptBufferedWriter);
             //Add the bindings to locals() variable in Python
@@ -85,7 +91,6 @@ public class PythonScriptWriter {
                       pythonScriptBufferedWriter);
             writeLine("    bindings['" + SchedulerConstants.RESULT_METADATA_VARIABLE + "'] = " +
                       SchedulerConstants.RESULT_METADATA_VARIABLE + "", pythonScriptBufferedWriter);
-            writeLine("sys.exit()", pythonScriptBufferedWriter);
         } catch (IOException e) {
             throw new IOException("Unable to write the python scripts to a file. ", e);
         }

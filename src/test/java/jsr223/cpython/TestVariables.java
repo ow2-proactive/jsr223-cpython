@@ -52,32 +52,7 @@ public class TestVariables {
 
     @Test
     public void testVariables() throws Exception {
-        HashMap<String, Serializable> variablesMap = new HashMap<String, Serializable>(1);
-        String initialValue = "badValue";
-        variablesMap.put("toto", initialValue);
 
-        String expectedVariableValue = "goodValue";
-
-        String pythonScript = "variables['toto'] = '" + expectedVariableValue + "'";
-
-        Map<String, Object> aBindings = Collections.singletonMap(SchedulerConstants.VARIABLES_BINDING_NAME,
-                                                                 (Object) variablesMap);
-
-        SimpleScript ss = new SimpleScript(pythonScript, PythonScriptEngineFactory.PARAMETERS.get(ScriptEngine.NAME));
-        TaskScript taskScript = new TaskScript(ss);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        ScriptResult<Serializable> res = taskScript.execute(aBindings,
-                                                            new PrintStream(output),
-                                                            new PrintStream(output));
-
-        if (res.getResult() == null) {
-            fail("The result is null, the Script Engine is not executed correctly!");
-        }
-
-        Assert.assertEquals("The changes in the variables map must be done",
-                            expectedVariableValue,
-                            variablesMap.get("toto"));
     }
 
 }
