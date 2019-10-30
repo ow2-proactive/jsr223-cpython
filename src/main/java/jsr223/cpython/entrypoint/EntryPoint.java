@@ -25,10 +25,6 @@
  */
 package jsr223.cpython.entrypoint;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
 
@@ -39,15 +35,7 @@ import javax.script.SimpleBindings;
  */
 public class EntryPoint {
 
-    private Map<String, Serializable> variables = new HashMap<>();
-
     private Bindings bindings = new SimpleBindings();
-
-    //Add the objects to the gateway server
-    //TODO not sure we still need this getVariables() because we already have the getBindings() whtich contains all
-    public Map getVariables() {
-        return variables;
-    }
 
     public Bindings getBindings() {
         return bindings;
