@@ -44,6 +44,16 @@ public class PythonScriptWriter {
     //Extension
     public static final String PYTHON_FILE_EXTENSION = ".cpy";
 
+    public File createTempFile() throws IOException {
+        File pythonTempFile = null;
+        try {
+            pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
+        } catch (IOException e) {
+            throw new IOException("Unable to create python temp file. " + e);
+        }
+        return pythonTempFile;
+    }
+
     public File writeFileToDisk(String fileContent) throws IOException {
         return writeFileToDisk(fileContent, 0, null);
     }
@@ -53,12 +63,7 @@ public class PythonScriptWriter {
     }
 
     public File writeFileToDisk(String fileContent, int port, String authToken) throws IOException {
-        File pythonTempFile = null;
-        try {
-            pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
-        } catch (IOException e) {
-            throw new IOException("Unable to create python temp file. " + e);
-        }
+        File pythonTempFile = createTempFile();
 
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
@@ -103,16 +108,12 @@ public class PythonScriptWriter {
         } catch (IOException e) {
             throw new IOException("Unable to write the python scripts to a file. ", e);
         }
+
         return pythonTempFile;
     }
 
     public File writeIPyParallelFileToDisk(File refPythonFile, int engine, String connector) throws IOException {
-        File pythonTempFile = null;
-        try {
-            pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
-        } catch (IOException e) {
-            throw new IOException("Unable to create python temp file. " + e);
-        }
+        File pythonTempFile = createTempFile();
 
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
@@ -137,6 +138,7 @@ public class PythonScriptWriter {
         } catch (IOException e) {
             throw new IOException("Unable to write the python scripts to a file. ", e);
         }
+
         return pythonTempFile;
     }
 

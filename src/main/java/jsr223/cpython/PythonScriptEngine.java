@@ -157,21 +157,18 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         // Write script to file
         File pythonFile = null;
         File refPythonFile = null;
-        if (useIPyParallel) {
-            try {
+        try {
+            if (useIPyParallel) {
                 refPythonFile = pythonScriptWriter.writeFileToDisk(script, port, authToken);
                 pythonFile = pythonScriptWriter.writeIPyParallelFileToDisk(refPythonFile,
                                                                            paramIPyParallelEngine,
                                                                            paramIPyParallelConnector);
-            } catch (IOException e) {
-                log.warn("Failed to write content to python file: ", e);
-            }
-        } else {
-            try {
+
+            } else {
                 pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
-            } catch (IOException e) {
-                log.warn("Failed to write content to python file: ", e);
             }
+        } catch (IOException e) {
+            log.warn("Failed to write content to python file: ", e);
         }
 
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
