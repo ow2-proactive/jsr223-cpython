@@ -44,23 +44,40 @@ public class PythonScriptWriter {
     //Extension
     public static final String PYTHON_FILE_EXTENSION = ".cpy";
 
-    public File writeFileToDisk(String fileContent, int port) throws IOException {
+    public File createTempFile() throws IOException {
         File pythonTempFile = null;
         try {
             pythonTempFile = File.createTempFile("jsr223-cpython-", PYTHON_FILE_EXTENSION);
         } catch (IOException e) {
             throw new IOException("Unable to create python temp file. " + e);
         }
+        return pythonTempFile;
+    }
 
-        // Write python script file to disk
+    public File writeFileToDisk(String fileContent) throws IOException {
+        return writeFileToDisk(fileContent, 0, null);
+    }
+
+    public File writeFileToDisk(String fileContent, int port) throws IOException {
+        return writeFileToDisk(fileContent, port, null);
+    }
+
+    public File writeFileToDisk(String fileContent, int port, String authToken) throws IOException {
+        File pythonTempFile = createTempFile();
+
         try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
-            writeLine("import sys", pythonScriptBufferedWriter);
-            writeLine("import os", pythonScriptBufferedWriter);
+            if (authToken == null) {
+                writeLine("import os, sys", pythonScriptBufferedWriter);
+            }
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
-
-            writeLine("params = GatewayParameters(auth_token = os.environ['CPYTHON_TOKEN'], port=" + port +
-                      ", auto_convert=True)", pythonScriptBufferedWriter);
+            if (authToken == null) {
+                writeLine("params = GatewayParameters(auth_token=os.environ['CPYTHON_TOKEN'], port=" + port +
+                          ", auto_convert=True)", pythonScriptBufferedWriter);
+            } else {
+                writeLine("params = GatewayParameters(auth_token='" + authToken + "', port=" + port +
+                          ", auto_convert=True)", pythonScriptBufferedWriter);
+            }
             writeLine("gateway = JavaGateway(gateway_parameters=params)", pythonScriptBufferedWriter);
             //Add the bindings to locals() variable in Python
             writeLine("bindings = gateway.entry_point.getBindings()", pythonScriptBufferedWriter);
@@ -85,10 +102,43 @@ public class PythonScriptWriter {
                       pythonScriptBufferedWriter);
             writeLine("    bindings['" + SchedulerConstants.RESULT_METADATA_VARIABLE + "'] = " +
                       SchedulerConstants.RESULT_METADATA_VARIABLE + "", pythonScriptBufferedWriter);
-            writeLine("sys.exit()", pythonScriptBufferedWriter);
+            if (authToken == null) {
+                writeLine("sys.exit()", pythonScriptBufferedWriter);
+            }
         } catch (IOException e) {
             throw new IOException("Unable to write the python scripts to a file. ", e);
         }
+
+        return pythonTempFile;
+    }
+
+    public File writeIPyParallelFileToDisk(File refPythonFile, int engine, String connector) throws IOException {
+        File pythonTempFile = createTempFile();
+
+        try (FileWriter pythonScriptFileWriter = new FileWriter(pythonTempFile);
+                BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
+            writeLine("import ipyparallel as ipp", pythonScriptBufferedWriter);
+            if (connector == null) {
+                writeLine("rc = ipp.Client()", pythonScriptBufferedWriter);
+            } else {
+                writeLine("rc = ipp.Client('" + connector + "')", pythonScriptBufferedWriter);
+            }
+            if (engine >= 0) {
+                writeLine("view = rc[" + engine + "]", pythonScriptBufferedWriter);
+            } else {
+                writeLine("view = rc.load_balanced_view()", pythonScriptBufferedWriter);
+            }
+            writeLine("view.block = True", pythonScriptBufferedWriter);
+            writeLine("view.track = True", pythonScriptBufferedWriter);
+            writeLine("filename = '" + refPythonFile.getAbsolutePath() + "'", pythonScriptBufferedWriter);
+            writeLine("cmd = \"__file__='{0}'\".format(filename)", pythonScriptBufferedWriter);
+            writeLine("ar = view.execute(cmd)", pythonScriptBufferedWriter);
+            writeLine("ar = view.run(filename)", pythonScriptBufferedWriter);
+            writeLine("print(ar.stdout)", pythonScriptBufferedWriter);
+        } catch (IOException e) {
+            throw new IOException("Unable to write the python scripts to a file. ", e);
+        }
+
         return pythonTempFile;
     }
 

@@ -94,23 +94,83 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         int port = gatewayServer.getListeningPort();
         log.info("Python gateway server started using port : " + port);
 
+        // Create Python Command.
+        // If we find a specific python which is required in generic info, we need to use this specific version of python.
+        String pythonVersion = "python";
+
+        // Use IPython Parallel Engine if specified
+        // https://ipyparallel.readthedocs.io/en/latest/index.html
+        boolean useIPyParallel = false;
+
+        // Use a pre-defined IPython engine if specified
+        /*
+         * By default uses engine index = 0,
+         * if engine index == -1, use `load_balanced_view`
+         * The LoadBalancedView is the class for load-balanced execution via the task scheduler.
+         * These views always run tasks on exactly one engine, but let the scheduler determine where
+         * that should be, allowing load-balancing of tasks.
+         */
+        int paramIPyParallelEngine = 0;
+
+        // Use a pre-defined IPython connector if specified
+        /*
+         * This form assumes that the default connection information (stored in
+         * ipcontroller-client.json,
+         * found in IPYTHONDIR/profile_default/security) is accurate. If the controller was started
+         * on a remote machine, you must copy that connection file to the client machine,
+         * or enter its contents as arguments to the Client constructor.
+         */
+        String paramIPyParallelConnector = null;
+
+        // Check generic information
+        Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
+                                                                       .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
+
+        if (genericInfo != null) {
+            String version = genericInfo.get("PYTHON_COMMAND");
+            if (version != null && !version.trim().isEmpty()) {
+                pythonVersion = version;
+            }
+
+            if ("true".equalsIgnoreCase(genericInfo.get("IPYPARALLEL_ENABLED"))) {
+                useIPyParallel = true;
+            }
+
+            String engine = genericInfo.get("IPYPARALLEL_ENGINE");
+            try {
+                if (engine != null && !engine.trim().isEmpty()) {
+                    paramIPyParallelEngine = Integer.parseInt(engine);
+                    if (paramIPyParallelEngine < 0) {
+                        paramIPyParallelEngine = -1;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                log.warn("Failed to parse IPython Parallel engine index: ", e);
+            }
+
+            String connector = genericInfo.get("IPYPARALLEL_CONNECTOR");
+            if (connector != null && !connector.trim().isEmpty()) {
+                paramIPyParallelConnector = connector;
+            }
+        }
+
         // Write script to file
         File pythonFile = null;
-
+        File refPythonFile = null;
         try {
-            pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
+            if (useIPyParallel) {
+                refPythonFile = pythonScriptWriter.writeFileToDisk(script, port, authToken);
+                pythonFile = pythonScriptWriter.writeIPyParallelFileToDisk(refPythonFile,
+                                                                           paramIPyParallelEngine,
+                                                                           paramIPyParallelConnector);
+
+            } else {
+                pythonFile = pythonScriptWriter.writeFileToDisk(script, port);
+            }
         } catch (IOException e) {
             log.warn("Failed to write content to python file: ", e);
         }
 
-        // Create Python Command.
-        // If we find a specific python which is required in generic info, we need to use this specific version of python.
-        String pythonVersion = "python";
-        Map<String, String> genericInfo = (Map<String, String>) context.getBindings(ScriptContext.ENGINE_SCOPE)
-                                                                       .get(SchedulerConstants.GENERIC_INFO_BINDING_NAME);
-        if (genericInfo != null && genericInfo.containsKey("PYTHON_COMMAND")) {
-            pythonVersion = genericInfo.get("PYTHON_COMMAND");
-        }
         String[] pythonCommand = pythonCommandCreator.createPythonExecutionCommand(pythonFile, pythonVersion);
 
         //Populate the bindings in the gateway server
@@ -125,7 +185,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                                                                             .getProcessBuilder(pythonCommand);
 
         Map<String, String> env = processBuilder.environment();
-
         env.put("CPYTHON_TOKEN", authToken);
 
         Process process = null;
@@ -133,7 +192,6 @@ public class PythonScriptEngine extends AbstractScriptEngine {
         CookieBasedProcessTreeKiller processTreeKiller = null;
 
         try {
-
             processTreeKiller = createProcessTreeKiller(context, processBuilder.environment());
 
             //Start process
@@ -195,6 +253,16 @@ public class PythonScriptEngine extends AbstractScriptEngine {
                     log.warn("File: " + pythonFile.getAbsolutePath() + " was not deleted.");
                 }
             }
+
+            if (useIPyParallel) {
+                if (refPythonFile != null) {
+                    boolean deleted = refPythonFile.delete();
+                    if (!deleted) {
+                        log.warn("File: " + refPythonFile.getAbsolutePath() + " was not deleted.");
+                    }
+                }
+            }
+
             //Stop the gateway server
             gatewayServer.shutdown();
 
