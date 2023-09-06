@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.script.ScriptEngine;
 
@@ -74,9 +75,13 @@ public class TestSpecificPythonVersionRequired {
         String[] pythonCommand = pythonCommandCreator.createPythonCommandWithParameter(null, "python3", "-h");
 
         ProcessBuilder pb = new ProcessBuilder(pythonCommand);
+        pb.inheritIO();
         try {
             Process p = pb.start();
-            p.waitFor();
+            boolean ok = p.waitFor(10, TimeUnit.SECONDS);
+            if (!ok) {
+                fail("Call to python3 hanged unexpectedly");
+            }
         } catch (Exception e) {
             Assume.assumeTrue("Python3 should be installed in order to pass this test", e == null);
         }
