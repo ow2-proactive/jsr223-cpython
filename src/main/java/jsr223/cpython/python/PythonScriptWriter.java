@@ -69,6 +69,7 @@ public class PythonScriptWriter {
                 BufferedWriter pythonScriptBufferedWriter = new BufferedWriter(pythonScriptFileWriter)) {
             if (authToken == null) {
                 writeLine("import os, sys", pythonScriptBufferedWriter);
+                writeLine("sys.path.append(os.getcwd())", pythonScriptBufferedWriter);
             }
             writeLine("from py4j.java_gateway import JavaGateway, GatewayParameters", pythonScriptBufferedWriter);
             if (authToken == null) {
